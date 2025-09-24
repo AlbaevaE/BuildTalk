@@ -61,7 +61,13 @@ export const insertCommentSchema = createInsertSchema(comments).omit({
   createdAt: true,
 });
 
+// Client-side comment creation schema (authorId will be added by server from auth)
+export const createCommentSchema = insertCommentSchema.omit({
+  authorId: true,
+});
+
 export type InsertThread = z.infer<typeof insertThreadSchema>;
 export type Thread = typeof threads.$inferSelect;
 export type InsertComment = z.infer<typeof insertCommentSchema>;
+export type CreateComment = z.infer<typeof createCommentSchema>;
 export type Comment = typeof comments.$inferSelect;

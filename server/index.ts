@@ -1,10 +1,32 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { initializeReplitAuth } from "./replitAuth";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Session configuration with PostgreSQL store
+const PgSession = connectPgSimple(session);
+app.use(session({
+  store: new PgSession({
+    conString: process.env.DATABASE_URL,
+    tableName: 'sessions',
+    createTableIfMissing: true,
+  }),
+  secret: process.env.SESSION_SECRET!,
+  resave: false,
+  saveUninitialized: false,
+  name: 'buildtalk.sid',
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  },
+}));
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -37,6 +59,19 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Initialize Replit Auth (optional in development)
+  try {
+    if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
+      await initializeReplitAuth();
+      console.log('Replit Auth initialized successfully');
+    } else {
+      console.log('Replit Auth disabled - missing CLIENT_ID or CLIENT_SECRET');
+    }
+  } catch (error) {
+    console.error('Replit Auth initialization failed:', (error as Error).message);
+    console.log('Continuing without authentication...');
+  }
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

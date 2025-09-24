@@ -4,22 +4,19 @@ import { storage } from "./storage";
 import { insertThreadSchema, insertCommentSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { z } from "zod";
+import { requireAuth, attachUser, getAuthorizationUrl, handleCallback } from "./replitAuth";
 
-// Validation schemas for updates
+// Validation schemas for updates (no author fields - will be taken from authenticated user)
 const updateThreadSchema = z.object({
   title: z.string().optional(),
   content: z.string().optional(),
   category: z.enum(['construction', 'furniture', 'services']).optional(),
-  authorName: z.string().optional(),
-  authorRole: z.enum(['contractor', 'homeowner', 'supplier', 'architect', 'diy']).optional(),
 }).strict().refine(obj => Object.keys(obj).length > 0, {
   message: "At least one field is required for update"
 });
 
 const updateCommentSchema = z.object({
   content: z.string().optional(),
-  authorName: z.string().optional(),
-  authorRole: z.enum(['contractor', 'homeowner', 'supplier', 'architect', 'diy']).optional(),
 }).strict().refine(obj => Object.keys(obj).length > 0, {
   message: "At least one field is required for update"
 });
@@ -29,6 +26,69 @@ const upvoteSchema = z.object({
 }).strict();
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Attach user to all requests
+  app.use('/api', attachUser);
+  
+  // Authentication routes
+  app.get('/auth/login', (req, res) => {
+    try {
+      const authUrl = getAuthorizationUrl();
+      res.redirect(authUrl);
+    } catch (error) {
+      console.error('Error getting authorization URL:', error);
+      // Return user-friendly message when auth is disabled
+      res.status(200).json({ 
+        message: 'Authentication is currently disabled in development mode',
+        error: 'Please configure CLIENT_ID and CLIENT_SECRET to enable authentication'
+      });
+    }
+  });
+  
+  app.get('/auth/callback', async (req, res) => {
+    try {
+      const { code, state } = req.query;
+      if (!code || typeof code !== 'string') {
+        return res.status(400).json({ error: 'Missing authorization code' });
+      }
+      
+      const user = await handleCallback(code, state as string);
+      (req as any).session.user = user;
+      res.redirect('/');
+    } catch (error) {
+      console.error('Error handling auth callback:', error);
+      res.status(200).json({ 
+        message: 'Authentication callback not available in development mode',
+        error: 'Please configure CLIENT_ID and CLIENT_SECRET to enable authentication'
+      });
+    }
+  });
+  
+  app.post('/auth/logout', (req, res) => {
+    if ((req as any).session) {
+      (req as any).session.destroy((err: any) => {
+        if (err) {
+          console.error('Error destroying session:', err);
+          return res.status(500).json({ error: 'Failed to logout' });
+        }
+        res.json({ success: true });
+      });
+    } else {
+      // No session to destroy when auth is disabled
+      res.json({ 
+        success: true,
+        message: 'Logout completed (authentication disabled)'
+      });
+    }
+  });
+  
+  app.get('/api/user', (req, res) => {
+    if (req.user) {
+      res.json(req.user);
+    } else {
+      res.status(401).json({ error: 'Not authenticated' });
+    }
+  });
+
   // Thread routes
   app.get("/api/threads", async (req, res) => {
     try {
@@ -53,7 +113,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/threads", async (req, res) => {
+  app.post("/api/threads", requireAuth, async (req, res) => {
     try {
       const result = insertThreadSchema.safeParse(req.body);
       if (!result.success) {
@@ -63,7 +123,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const thread = await storage.createThread(result.data);
+      const threadData = { ...result.data, authorId: req.user!.id };
+      const thread = await storage.createThread(threadData);
       res.status(201).json(thread);
     } catch (error) {
       console.error("Error creating thread:", error);
@@ -71,7 +132,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/threads/:id", async (req, res) => {
+  app.patch("/api/threads/:id", requireAuth, async (req, res) => {
     try {
       const result = updateThreadSchema.safeParse(req.body);
       if (!result.success) {
@@ -92,7 +153,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/threads/:id/upvotes", async (req, res) => {
+  app.patch("/api/threads/:id/upvotes", requireAuth, async (req, res) => {
     try {
       const result = upvoteSchema.safeParse(req.body);
       if (!result.success) {
@@ -113,7 +174,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/threads/:id", async (req, res) => {
+  app.delete("/api/threads/:id", requireAuth, async (req, res) => {
     try {
       const deleted = await storage.deleteThread(req.params.id);
       if (!deleted) {
@@ -150,7 +211,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/threads/:threadId/comments", async (req, res) => {
+  app.post("/api/threads/:threadId/comments", requireAuth, async (req, res) => {
     try {
       // Check if thread exists
       const thread = await storage.getThread(req.params.threadId);
@@ -167,7 +228,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const comment = await storage.createComment(result.data);
+      const commentWithAuthor = { ...result.data, authorId: req.user!.id };
+      const comment = await storage.createComment(commentWithAuthor);
       res.status(201).json(comment);
     } catch (error) {
       console.error("Error creating comment:", error);
@@ -175,7 +237,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/comments/:id", async (req, res) => {
+  app.patch("/api/comments/:id", requireAuth, async (req, res) => {
     try {
       const result = updateCommentSchema.safeParse(req.body);
       if (!result.success) {
@@ -196,7 +258,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/comments/:id/upvotes", async (req, res) => {
+  app.patch("/api/comments/:id/upvotes", requireAuth, async (req, res) => {
     try {
       const result = upvoteSchema.safeParse(req.body);
       if (!result.success) {
@@ -217,7 +279,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/comments/:id", async (req, res) => {
+  app.delete("/api/comments/:id", requireAuth, async (req, res) => {
     try {
       const deleted = await storage.deleteComment(req.params.id);
       if (!deleted) {

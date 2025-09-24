@@ -9,6 +9,7 @@ import Comment from "@/components/Comment";
 import CommentForm from "@/components/CommentForm";
 import { useToast } from "@/hooks/use-toast";
 import { useThread, useComments, useUpvoteThread, useCreateComment, useUpvoteComment } from "@/hooks/useThreads";
+import { useAuth, getUserDisplayName } from "@/hooks/useAuth";
 import type { Thread, Comment as CommentType } from "@shared/schema";
 
 // Helper function to format time
@@ -28,6 +29,7 @@ function formatTimeAgo(date: Date): string {
 export default function ThreadDetail() {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
+  const { data: currentUser } = useAuth();
 
   // API hooks
   const { data: thread, isLoading: threadLoading, error: threadError } = useThread(id!);
@@ -121,13 +123,10 @@ export default function ThreadDetail() {
 
   const handleCommentSubmit = (commentData: {
     content: string;
-    authorId: string;
-    authorName: string;
-    authorRole: string;
   }) => {
     createCommentMutation.mutate({
       threadId: id,
-      ...commentData,
+      content: commentData.content,
     });
   };
 
@@ -149,13 +148,13 @@ export default function ThreadDetail() {
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <UserAvatar 
-                name={thread.authorName} 
-                role={thread.authorRole as 'contractor' | 'homeowner' | 'supplier' | 'architect' | 'diy'} 
+                name="Автор" 
+                role="homeowner" 
                 size="md" 
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="font-medium text-foreground">{thread.authorName}</span>
+                  <span className="font-medium text-foreground">Пользователь</span>
                   <span>•</span>
                   <span>{formatTimeAgo(new Date(thread.createdAt))}</span>
                 </div>

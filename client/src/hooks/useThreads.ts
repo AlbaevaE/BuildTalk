@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import type { Thread, Comment, InsertComment } from "@shared/schema";
+import type { Thread, Comment, CreateComment } from "@shared/schema";
 
 // Thread hooks
 export function useThread(id: string) {
@@ -114,7 +114,7 @@ export function useCreateComment() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ threadId, ...data }: InsertComment) => {
+    mutationFn: async ({ threadId, ...data }: CreateComment & { threadId: string }) => {
       const response = await apiRequest("POST", `/api/threads/${threadId}/comments`, data);
       return response.json();
     },
