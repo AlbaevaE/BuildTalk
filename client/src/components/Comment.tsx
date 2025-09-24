@@ -14,13 +14,9 @@ interface CommentProps {
 }
 
 export default function Comment({ comment, onUpvote, onReply }: CommentProps) {
-  const [upvotes, setUpvotes] = useState(comment.upvotes);
-  const [isUpvoted, setIsUpvoted] = useState(false);
-
   const handleUpvote = () => {
-    const newUpvotes = isUpvoted ? upvotes - 1 : upvotes + 1;
-    setUpvotes(newUpvotes);
-    setIsUpvoted(!isUpvoted);
+    // Simple increment by 1 - optimistic updates handled by React Query
+    const newUpvotes = comment.upvotes + 1;
     onUpvote?.(comment.id, newUpvotes);
   };
 
@@ -64,12 +60,12 @@ export default function Comment({ comment, onUpvote, onReply }: CommentProps) {
           <Button 
             variant="ghost" 
             size="sm" 
-            className={`gap-2 ${isUpvoted ? 'text-red-500' : ''}`}
+            className="gap-2"
             onClick={handleUpvote}
             data-testid={`button-comment-upvote-${comment.id}`}
           >
-            <Heart className={`h-4 w-4 ${isUpvoted ? 'fill-current' : ''}`} />
-            {upvotes}
+            <Heart className="h-4 w-4" />
+            {comment.upvotes}
           </Button>
           
           <Button 

@@ -7,6 +7,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/AppSidebar";
 import ThemeToggle from "@/components/ThemeToggle";
 import HomePage from "@/pages/HomePage";
+import ThreadDetail from "@/pages/ThreadDetail";
 import HeroSection from "@/components/HeroSection";
 import NotFound from "@/pages/not-found";
 import { useState } from "react";
@@ -15,6 +16,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={HomePage} />
+      <Route path="/thread/:id" component={ThreadDetail} />
       <Route component={NotFound} />
     </Switch>
   );

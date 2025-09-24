@@ -4,6 +4,7 @@ import { Heart, MessageCircle, Share2, MoreHorizontal } from "lucide-react";
 import UserAvatar from "./UserAvatar";
 import CategoryBadge from "./CategoryBadge";
 import { useState } from "react";
+import { Link } from "wouter";
 
 interface ThreadCardProps {
   id: string;
@@ -35,7 +36,9 @@ export default function ThreadCard({
   const [upvotes, setUpvotes] = useState(initialUpvotes);
   const [isUpvoted, setIsUpvoted] = useState(false);
 
-  const handleUpvote = () => {
+  const handleUpvote = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (isUpvoted) {
       setUpvotes(prev => prev - 1);
       setIsUpvoted(false);
@@ -47,8 +50,9 @@ export default function ThreadCard({
   };
 
   return (
-    <Card className="hover-elevate cursor-pointer" data-testid={`thread-card-${id}`}>
-      <CardHeader className="pb-3">
+    <Link href={`/thread/${id}`}>
+      <Card className="hover-elevate cursor-pointer" data-testid={`thread-card-${id}`}>
+        <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0 flex-1">
             <UserAvatar name={author.name} role={author.role} avatar={author.avatar} size="md" />
@@ -61,7 +65,12 @@ export default function ThreadCard({
               <CategoryBadge category={category} />
             </div>
           </div>
-          <Button variant="ghost" size="icon" data-testid={`button-thread-menu-${id}`}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={(e) => e.stopPropagation()}
+            data-testid={`button-thread-menu-${id}`}
+          >
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </div>
@@ -110,6 +119,7 @@ export default function ThreadCard({
             variant="ghost" 
             size="sm" 
             className="gap-2"
+            onClick={(e) => e.stopPropagation()}
             data-testid={`button-reply-${id}`}
           >
             <MessageCircle className="h-4 w-4" />
@@ -120,13 +130,15 @@ export default function ThreadCard({
             variant="ghost" 
             size="sm" 
             className="gap-2"
+            onClick={(e) => e.stopPropagation()}
             data-testid={`button-share-${id}`}
           >
             <Share2 className="h-4 w-4" />
             Поделиться
           </Button>
         </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
