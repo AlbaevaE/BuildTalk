@@ -1,20 +1,33 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, timestamp, jsonb, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Session storage table.
+// (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
+// User storage table.
+// (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
-});
-
-export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
 export const threads = pgTable("threads", {
@@ -23,8 +36,6 @@ export const threads = pgTable("threads", {
   content: text("content").notNull(),
   category: varchar("category", { length: 50 }).notNull(), // 'construction', 'furniture', 'services'
   authorId: varchar("author_id").notNull().references(() => users.id),
-  authorName: text("author_name").notNull(),
-  authorRole: varchar("author_role", { length: 20 }).notNull(), // 'contractor', 'homeowner', etc.
   upvotes: integer("upvotes").notNull().default(0),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
@@ -34,8 +45,6 @@ export const comments = pgTable("comments", {
   content: text("content").notNull(),
   threadId: varchar("thread_id").notNull().references(() => threads.id),
   authorId: varchar("author_id").notNull().references(() => users.id),
-  authorName: text("author_name").notNull(),
-  authorRole: varchar("author_role", { length: 20 }).notNull(),
   upvotes: integer("upvotes").notNull().default(0),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
