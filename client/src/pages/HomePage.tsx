@@ -3,7 +3,7 @@ import SearchBar from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Flame, Clock, TrendingUp } from "lucide-react";
+import { Flame, Clock } from "lucide-react";
 
 // todo: remove mock functionality
 const mockThreads = [
@@ -84,7 +84,7 @@ export default function HomePage() {
 
       {/* Feed Tabs */}
       <Tabs defaultValue="trending" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="trending" className="gap-2" data-testid="tab-trending">
             <Flame className="h-4 w-4" />
             Популярные
@@ -92,10 +92,6 @@ export default function HomePage() {
           <TabsTrigger value="recent" className="gap-2" data-testid="tab-recent">
             <Clock className="h-4 w-4" />
             Недавние
-          </TabsTrigger>
-          <TabsTrigger value="popular" className="gap-2" data-testid="tab-popular">
-            <TrendingUp className="h-4 w-4" />
-            Обсуждаемые
           </TabsTrigger>
         </TabsList>
 
@@ -126,13 +122,6 @@ export default function HomePage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="popular" className="space-y-4 mt-6">
-          <div className="space-y-4">
-            {mockThreads.slice().sort((a, b) => b.upvotes - a.upvotes).map((thread) => (
-              <ThreadCard key={thread.id} {...thread} />
-            ))}
-          </div>
-        </TabsContent>
       </Tabs>
     </div>
   );
