@@ -123,7 +123,7 @@ export default function ThreadCard({
             data-testid={`button-share-${id}`}
           >
             <Share2 className="h-4 w-4" />
-            Share
+            Поделиться
           </Button>
         </div>
       </CardContent>

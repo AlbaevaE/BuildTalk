@@ -8,7 +8,7 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({ 
-  placeholder = "Search discussions, users, or topics...", 
+  placeholder = "Поиск обсуждений, пользователей или тем...", 
   onSearch 
 }: SearchBarProps) {
   const [query, setQuery] = useState("");

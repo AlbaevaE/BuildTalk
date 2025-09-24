@@ -60,16 +60,16 @@ export default function CreateThreadForm({ onSubmit, onCancel }: CreateThreadFor
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle data-testid="text-create-thread-title">Create New Thread</CardTitle>
+        <CardTitle data-testid="text-create-thread-title">Создать новое обсуждение</CardTitle>
       </CardHeader>
       
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="title">Title *</Label>
+            <Label htmlFor="title">Заголовок *</Label>
             <Input
               id="title"
-              placeholder="What's your question or topic?"
+              placeholder="Какой у вас вопрос или тема?"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               data-testid="input-thread-title"
@@ -78,24 +78,24 @@ export default function CreateThreadForm({ onSubmit, onCancel }: CreateThreadFor
           </div>
 
           <div>
-            <Label htmlFor="category">Category *</Label>
+            <Label htmlFor="category">Категория *</Label>
             <Select value={category} onValueChange={setCategory} required>
               <SelectTrigger data-testid="select-thread-category">
-                <SelectValue placeholder="Select a category" />
+                <SelectValue placeholder="Выберите категорию" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="construction">Construction</SelectItem>
-                <SelectItem value="furniture">Furniture</SelectItem>
-                <SelectItem value="services">Services</SelectItem>
+                <SelectItem value="construction">Строительство</SelectItem>
+                <SelectItem value="furniture">Мебель</SelectItem>
+                <SelectItem value="services">Услуги</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <Label htmlFor="content">Description *</Label>
+            <Label htmlFor="content">Описание *</Label>
             <Textarea
               id="content"
-              placeholder="Describe your question or share your experience..."
+              placeholder="Опишите ваш вопрос или поделитесь опытом..."
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={4}
@@ -105,7 +105,7 @@ export default function CreateThreadForm({ onSubmit, onCancel }: CreateThreadFor
           </div>
 
           <div>
-            <Label>Images (optional)</Label>
+            <Label>Изображения (опционально)</Label>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <input
@@ -125,7 +125,7 @@ export default function CreateThreadForm({ onSubmit, onCancel }: CreateThreadFor
                   data-testid="button-upload-image"
                 >
                   <ImagePlus className="h-4 w-4 mr-2" />
-                  Add Images ({images.length}/4)
+                  Добавить изображения ({images.length}/4)
                 </Button>
               </div>
 
@@ -159,7 +159,7 @@ export default function CreateThreadForm({ onSubmit, onCancel }: CreateThreadFor
 
           <div className="flex gap-2 pt-4">
             <Button type="submit" data-testid="button-submit-thread">
-              Create Thread
+              Создать обсуждение
             </Button>
             {onCancel && (
               <Button 
@@ -168,7 +168,7 @@ export default function CreateThreadForm({ onSubmit, onCancel }: CreateThreadFor
                 onClick={onCancel}
                 data-testid="button-cancel-thread"
               >
-                Cancel
+                Отмена
               </Button>
             )}
           </div>

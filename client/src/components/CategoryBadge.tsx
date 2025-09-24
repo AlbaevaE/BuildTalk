@@ -8,17 +8,17 @@ interface CategoryBadgeProps {
 
 const categoryConfig = {
   construction: {
-    label: 'Construction',
+    label: 'Строительство',
     icon: Hammer,
     color: 'text-primary',
   },
   furniture: {
-    label: 'Furniture',
+    label: 'Мебель',
     icon: Sofa,
     color: 'text-blue-600',
   },
   services: {
-    label: 'Services',
+    label: 'Услуги',
     icon: Wrench,
     color: 'text-green-600',
   },

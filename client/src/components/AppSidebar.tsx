@@ -14,20 +14,20 @@ import {
 import { Button } from "@/components/ui/button";
 
 const navigationItems = [
-  { title: "Home", icon: Home, url: "/", active: true },
-  { title: "Search", icon: Search, url: "/search" },
-  { title: "Notifications", icon: Bell, url: "/notifications" },
+  { title: "Главная", icon: Home, url: "/", active: true },
+  { title: "Поиск", icon: Search, url: "/search" },
+  { title: "Уведомления", icon: Bell, url: "/notifications" },
 ];
 
 const categoryItems = [
-  { title: "Construction", icon: Hammer, url: "/construction" },
-  { title: "Furniture", icon: Sofa, url: "/furniture" },
-  { title: "Services", icon: Wrench, url: "/services" },
+  { title: "Строительство", icon: Hammer, url: "/construction" },
+  { title: "Мебель", icon: Sofa, url: "/furniture" },
+  { title: "Услуги", icon: Wrench, url: "/services" },
 ];
 
 const userItems = [
-  { title: "Profile", icon: User, url: "/profile" },
-  { title: "Settings", icon: Settings, url: "/settings" },
+  { title: "Профиль", icon: User, url: "/profile" },
+  { title: "Настройки", icon: Settings, url: "/settings" },
 ];
 
 export default function AppSidebar() {
@@ -65,7 +65,7 @@ export default function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Categories</SidebarGroupLabel>
+          <SidebarGroupLabel>Категории</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {categoryItems.map((item) => (
@@ -86,7 +86,7 @@ export default function AppSidebar() {
           <SidebarGroupContent>
             <Button className="w-full justify-start gap-2" data-testid="button-create-thread">
               <PlusCircle className="h-4 w-4" />
-              Create Thread
+              Создать обсуждение
             </Button>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -22,13 +22,13 @@ export default function HeroSection() {
             className="text-4xl font-bold tracking-tight text-white sm:text-6xl"
             data-testid="text-hero-title"
           >
-            Connect with Construction Professionals
+            Общайтесь со Строительными Профессионалами
           </h1>
           <p 
             className="mt-6 text-lg leading-8 text-gray-100"
             data-testid="text-hero-description"
           >
-            Join BuildTalk, the premier community platform where contractors, architects, DIY enthusiasts, and homeowners share knowledge, get expert advice, and build together.
+            Присоединяйтесь к BuildTalk - ведущей платформе сообщества, где подрядчики, архитекторы, энтузиасты DIY и домовладельцы делятся знаниями, получают экспертные советы и строят вместе.
           </p>
           
           <div className="mt-10 flex items-center justify-center gap-4">
@@ -37,7 +37,7 @@ export default function HeroSection() {
               className="gap-2 bg-primary hover:bg-primary/90 backdrop-blur-sm"
               data-testid="button-get-started"
             >
-              Get Started
+              Начать
               <ArrowRight className="h-4 w-4" />
             </Button>
             <Button 
@@ -46,7 +46,7 @@ export default function HeroSection() {
               className="gap-2 bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
               data-testid="button-learn-more"
             >
-              Learn More
+              Узнать больше
             </Button>
           </div>
 
@@ -57,21 +57,21 @@ export default function HeroSection() {
                 <Users className="h-6 w-6" />
                 <span className="text-2xl font-bold text-white">10K+</span>
               </div>
-              <p className="mt-1 text-sm text-gray-200">Active Members</p>
+              <p className="mt-1 text-sm text-gray-200">Активных участников</p>
             </div>
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 text-primary">
                 <MessageSquare className="h-6 w-6" />
-                <span className="text-2xl font-bold text-white">50K+</span>
+                <span className="text-2xl font-bold text-white">50К+</span>
               </div>
-              <p className="mt-1 text-sm text-gray-200">Discussions</p>
+              <p className="mt-1 text-sm text-gray-200">Обсуждений</p>
             </div>
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 text-primary">
                 <Star className="h-6 w-6" />
                 <span className="text-2xl font-bold text-white">4.9</span>
               </div>
-              <p className="mt-1 text-sm text-gray-200">User Rating</p>
+              <p className="mt-1 text-sm text-gray-200">Рейтинг пользователей</p>
             </div>
           </div>
         </div>

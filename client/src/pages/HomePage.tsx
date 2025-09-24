@@ -9,68 +9,68 @@ import { Flame, Clock, TrendingUp } from "lucide-react";
 const mockThreads = [
   {
     id: "1",
-    title: "Best way to install hardwood flooring in high moisture areas?",
-    content: "I'm renovating my kitchen and want to install hardwood flooring, but I'm concerned about moisture from the sink area. What are the best practices for protecting the wood and ensuring longevity? Should I use engineered hardwood instead?",
+    title: "Лучший способ укладки паркета во влажных помещениях?",
+    content: "Делаю ремонт на кухне и хочу уложить паркет, но беспокоюсь о влажности от раковины. Какие есть лучшие практики защиты дерева и обеспечения долговечности? Стоит ли использовать инженерный паркет?",
     author: {
-      name: "Sarah Johnson",
+      name: "Сара Джонсон",
       role: "homeowner" as const,
     },
     category: "construction" as const,
     upvotes: 12,
     replies: 8,
-    timeAgo: "2 hours ago",
+    timeAgo: "2 часа назад",
   },
   {
     id: "2",
-    title: "Custom dining table build - walnut vs oak?",
-    content: "Planning to build a custom 8-foot dining table for my family. Torn between walnut and oak. Looking for advice on durability, cost, and appearance for a modern farmhouse style. Also considering the joinery methods.",
+    title: "Изготовление стола на заказ - орех или дуб?",
+    content: "Планирую построить обеденный стол длиной 2,4 метра для семьи. Выбираю между орехом и дубом. Нужен совет по долговечности, стоимости и внешнему виду в современном фермерском стиле. Также рассматриваю способы соединения.",
     author: {
-      name: "Mike Chen",
+      name: "Майк Чен",
       role: "diy" as const,
     },
     category: "furniture" as const,
     upvotes: 24,
     replies: 15,
-    timeAgo: "4 hours ago",
+    timeAgo: "4 часа назад",
   },
   {
     id: "3",
-    title: "Electrical permit requirements for kitchen renovation",
-    content: "I'm doing a major kitchen renovation and need to add new outlets and move some existing ones. What are the typical permit requirements and do I need a licensed electrician for everything?",
+    title: "Требования к разрешениям на электрику при ремонте кухни",
+    content: "Делаю масштабный ремонт кухни, нужно добавить новые розетки и перенести существующие. Какие обычно требуются разрешения и нужен ли лицензированный электрик для всех работ?",
     author: {
-      name: "Tom Rodriguez",
+      name: "Том Родригес",
       role: "homeowner" as const,
     },
     category: "services" as const,
     upvotes: 18,
     replies: 12,
-    timeAgo: "6 hours ago",
+    timeAgo: "6 часов назад",
   },
   {
     id: "4",
-    title: "Load-bearing wall identification tips",
-    content: "Working on an open concept renovation and need to identify load-bearing walls before demo. What are the key things to look for? When should I definitely call a structural engineer?",
+    title: "Советы по определению несущих стен",
+    content: "Работаю над перепланировкой в открытую планировку и нужно определить несущие стены перед демонтажем. На что обращать внимание? Когда точно нужно вызывать инженера-конструктора?",
     author: {
-      name: "Lisa Park",
+      name: "Лиза Парк",
       role: "contractor" as const,
     },
     category: "construction" as const,
     upvotes: 35,
     replies: 22,
-    timeAgo: "8 hours ago",
+    timeAgo: "8 часов назад",
   },
   {
     id: "5",
-    title: "Finish recommendations for outdoor furniture",
-    content: "Building some outdoor benches and planters from cedar. What finishes do you recommend for weather protection while maintaining the natural wood look? Oil vs polyurethane vs marine varnish?",
+    title: "Рекомендации по покрытию для уличной мебели",
+    content: "Делаю садовые скамейки и кашпо из кедра. Какое покрытие рекомендуете для защиты от погоды, сохраняя натуральный вид дерева? Масло, полиуретан или морской лак?",
     author: {
-      name: "David Kim",
+      name: "Дэвид Ким",
       role: "diy" as const,
     },
     category: "furniture" as const,
     upvotes: 16,
     replies: 9,
-    timeAgo: "12 hours ago",
+    timeAgo: "12 часов назад",
   },
 ];
 
@@ -87,15 +87,15 @@ export default function HomePage() {
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="trending" className="gap-2" data-testid="tab-trending">
             <Flame className="h-4 w-4" />
-            Trending
+            Популярные
           </TabsTrigger>
           <TabsTrigger value="recent" className="gap-2" data-testid="tab-recent">
             <Clock className="h-4 w-4" />
-            Recent
+            Недавние
           </TabsTrigger>
           <TabsTrigger value="popular" className="gap-2" data-testid="tab-popular">
             <TrendingUp className="h-4 w-4" />
-            Popular
+            Обсуждаемые
           </TabsTrigger>
         </TabsList>
 
@@ -109,9 +109,9 @@ export default function HomePage() {
           <Card className="border-dashed">
             <CardContent className="flex items-center justify-center py-8">
               <div className="text-center space-y-2">
-                <p className="text-muted-foreground">You've reached the end of trending discussions</p>
+                <p className="text-muted-foreground">Вы просмотрели все популярные обсуждения</p>
                 <Button variant="outline" data-testid="button-load-more">
-                  Load More
+                  Загрузить еще
                 </Button>
               </div>
             </CardContent>

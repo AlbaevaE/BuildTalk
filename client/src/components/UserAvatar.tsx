@@ -18,11 +18,11 @@ const roleColors = {
 };
 
 const roleLabels = {
-  contractor: 'Pro',
-  homeowner: 'Home',
-  supplier: 'Supplier',
-  architect: 'Architect',
-  diy: 'DIY',
+  contractor: 'Подряд',
+  homeowner: 'Дом',
+  supplier: 'Постав',
+  architect: 'Архит',
+  diy: 'Сам',
 };
 
 const sizeClasses = {
