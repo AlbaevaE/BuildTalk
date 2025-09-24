@@ -36,6 +36,78 @@ export class MemStorage implements IStorage {
     this.users = new Map();
     this.threads = new Map();
     this.comments = new Map();
+    
+    // Initialize with default data
+    this.initializeDefaultData();
+  }
+
+  private initializeDefaultData() {
+    // Create default users
+    const users = [
+      { id: "user-1", username: "sara_johnson", email: "sara@example.com", role: "homeowner" as const },
+      { id: "user-2", username: "mike_chen", email: "mike@example.com", role: "diy" as const },
+      { id: "user-3", username: "tom_rodriguez", email: "tom@example.com", role: "homeowner" as const },
+      { id: "user-4", username: "lisa_park", email: "lisa@example.com", role: "contractor" as const },
+      { id: "user-5", username: "david_kim", email: "david@example.com", role: "diy" as const },
+    ];
+
+    users.forEach(user => this.users.set(user.id, user));
+
+    // Create default threads matching HomePage mock data
+    const threads = [
+      {
+        id: "1",
+        title: "Лучший способ укладки паркета во влажных помещениях?",
+        content: "Делаю ремонт на кухне и хочу уложить паркет, но беспокоюсь о влажности от раковины. Какие есть лучшие практики защиты дерева и обеспечения долговечности? Стоит ли использовать инженерный паркет?",
+        authorId: "user-1",
+        authorName: "Сара Джонсон",
+        category: "construction" as const,
+        upvotes: 12,
+        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+      },
+      {
+        id: "2",
+        title: "Изготовление стола на заказ - орех или дуб?",
+        content: "Планирую построить обеденный стол длиной 2,4 метра для семьи. Выбираю между орехом и дубом. Нужен совет по долговечности, стоимости и внешнему виду в современном фермерском стиле. Также рассматриваю способы соединения.",
+        authorId: "user-2",
+        authorName: "Майк Чен",
+        category: "furniture" as const,
+        upvotes: 24,
+        createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
+      },
+      {
+        id: "3",
+        title: "Требования к разрешениям на электрику при ремонте кухни",
+        content: "Делаю масштабный ремонт кухни, нужно добавить новые розетки и перенести существующие. Какие обычно требуются разрешения и нужен ли лицензированный электрик для всех работ?",
+        authorId: "user-3",
+        authorName: "Том Родригес",
+        category: "services" as const,
+        upvotes: 18,
+        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
+      },
+      {
+        id: "4",
+        title: "Советы по определению несущих стен",
+        content: "Работаю над перепланировкой в открытую планировку и нужно определить несущие стены перед демонтажем. На что обращать внимание? Когда точно нужно вызывать инженера-конструктора?",
+        authorId: "user-4",
+        authorName: "Лиза Парк",
+        category: "construction" as const,
+        upvotes: 35,
+        createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000), // 8 hours ago
+      },
+      {
+        id: "5",
+        title: "Рекомендации по покрытию для уличной мебели",
+        content: "Делаю садовые скамейки и кашпо из кедра. Какое покрытие рекомендуете для защиты от погоды, сохраняя натуральный вид дерева? Масло, полиуретан или морской лак?",
+        authorId: "user-5",
+        authorName: "Дэвид Ким",
+        category: "furniture" as const,
+        upvotes: 16,
+        createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000), // 12 hours ago
+      },
+    ];
+
+    threads.forEach(thread => this.threads.set(thread.id, thread));
   }
 
   async getUser(id: string): Promise<User | undefined> {
