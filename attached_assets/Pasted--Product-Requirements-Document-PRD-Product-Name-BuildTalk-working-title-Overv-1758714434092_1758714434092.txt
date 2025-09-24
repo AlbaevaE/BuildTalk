@@ -1,0 +1,176 @@
+# Product Requirements Document (PRD)
+
+## Product Name
+
+**BuildTalk** (working title)
+
+---
+
+## Overview
+
+BuildTalk is a community platform inspired by Threads, focused exclusively on **construction, furniture, and related services**. Users can start discussions, share experiences, and ask for advice. The app blends structured Q\&A with conversational threads, ensuring professionals, DIYers, and service providers have a single space to connect.
+
+---
+
+## Goals
+
+1. Create an easy-to-use, mobile-first platform for discussions in construction and furniture.
+2. Encourage expert participation while remaining accessible to casual homeowners.
+3. Enable service discovery and peer recommendations.
+4. Establish a foundation for a future marketplace (Phase 2).
+
+---
+
+## Target Users
+
+* **Construction professionals** (contractors, architects, carpenters).
+* **Furniture makers and designers**.
+* **Homeowners and DIY enthusiasts**.
+* **Suppliers and service providers** (interior decorators, plumbers, electricians).
+
+---
+
+## Core Features
+
+### 1. User Accounts
+
+* **Sign up/login**: Email, Google, Facebook, Apple ID.
+* **Profiles**: Picture, bio, role (contractor, homeowner, supplier, etc.), expertise tags.
+* **Reputation system**: Badges for participation, upvotes, verified experts.
+
+### 2. Threads (Discussions)
+
+* **Create a thread**: Title + description + optional category (Construction, Furniture, Services).
+* **Replies**: Inline conversational replies (like Threads/Reddit).
+* **Nested comments**: Support threaded replies for clarity.
+* **Attachments**: Photos, videos, PDFs (e.g., blueprints, invoices).
+* **Mentions & hashtags**: Tag users or mark topics (#carpentry, #interiordesign).
+
+### 3. Feed & Discovery
+
+* **Home feed**: Personalized based on user interests & activity.
+* **Trending topics**: Most active discussions today/this week.
+* **Search**: By keywords, categories, or hashtags.
+* **Filter/sort**: By relevance, recency, popularity.
+
+### 4. Notifications
+
+* Mentions (@user).
+* Replies to threads.
+* Upvotes on posts/comments.
+* New activity in followed categories.
+
+### 5. Moderation & Safety
+
+* **Report content**: Spam, off-topic, inappropriate.
+* **Moderators/admins**: Approve/ban accounts, manage flagged content.
+* **Community guidelines**: Enforced at onboarding.
+
+### 6. UX Enhancements
+
+* Infinite scroll feed.
+* Rich media previews (images, YouTube, CAD model links).
+* Quick action buttons (Reply, Upvote, Share).
+* Dark/light mode.
+
+### 7. Phase 2 (Future Marketplace)
+
+* Directory of verified service providers.
+* Marketplace listings for furniture and construction materials.
+* Integration with booking/payment.
+
+---
+
+## UX & Design Principles
+
+* **Simplicity first**: Clean UI, minimal clutter.
+* **Mobile-first**: Optimized for iOS & Android, responsive web version.
+* **Community-driven**: Engagement nudges (badges, gamification).
+* **Contextual relevance**: Feeds adapt to user’s selected expertise and interest tags.
+
+---
+
+## User Flows
+
+### 1. New User Onboarding
+
+1. User downloads app → signs up.
+2. Selects role (homeowner, professional, supplier).
+3. Chooses interest tags (e.g., #plumbing, #furniture).
+4. Personalized feed generated.
+
+### 2. Create a Thread
+
+1. User taps “+ Thread.”
+2. Adds title + description.
+3. Chooses category (Construction, Furniture, Services).
+4. Optionally adds photos/videos.
+5. Posts → thread visible in feed & searchable.
+
+### 3. Reply to a Thread
+
+1. Tap thread → view conversation.
+2. Tap reply → write response.
+3. Optionally attach media.
+4. Post reply → nested under parent.
+
+### 4. Service Discovery (Phase 2)
+
+1. User goes to “Marketplace.”
+2. Filters by service type (e.g., carpenter, electrician).
+3. Views provider profiles & reviews.
+4. Contacts/book directly.
+
+---
+
+## Technical Requirements
+
+* **Frontend**: React Native (mobile), React.js (web).
+* **Backend**: Node.js + Express.
+* **Database**: PostgreSQL (structured data), ElasticSearch (search).
+* **Storage**: AWS S3 for media.
+* **Auth**: OAuth 2.0, JWT.
+* **Push Notifications**: Firebase/Apple Push.
+* **Moderation Tools**: AI-based content flagging (future).
+
+---
+
+## Success Metrics
+
+* **User acquisition**: 10k signups in first 6 months.
+* **Engagement**: Avg. 5 posts/comments per user/month.
+* **Retention**: 40% active users after 3 months.
+* **Marketplace (Phase 2)**: At least 500 providers listed.
+
+---
+
+## Risks & Mitigation
+
+* **Spam/low-quality content** → Solution: Moderation + upvote system.
+* **Professional credibility issues** → Solution: Verified expert profiles.
+* **Low engagement** → Solution: Gamification, badges, weekly highlights.
+
+---
+
+## Roadmap
+
+### Phase 1 (MVP, 3–4 months)
+
+* User auth, profiles.
+* Thread creation, replies, media.
+* Feed & search.
+* Notifications.
+* Basic moderation.
+
+### Phase 2 (6–8 months)
+
+* Marketplace & service provider directory.
+* Payments & booking.
+* Advanced moderation (AI).
+* Gamification features.
+
+### Phase 3 (12+ months)
+
+* API integrations with design tools (SketchUp, AutoCAD).
+* AR previews for furniture placement.
+* Expanded marketplace with logistics integration.
