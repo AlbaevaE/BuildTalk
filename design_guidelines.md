@@ -1,23 +1,24 @@
 # BuildTalk Design Guidelines
 
 ## Design Approach
-**Hybrid Approach**: Minimal design system inspired by **Linear's** clean interface and **Notion's** content-first philosophy, optimized for calm, distraction-free discussions.
+**Threads-Inspired Minimalism**: Ultra-clean design system inspired by **Threads' pristine interface**, emphasizing pure white backgrounds, crisp black text, and minimal visual noise for optimal content focus.
 
 ## Core Design Elements
 
 ### A. Color Palette
 **Primary Colors:**
-- Light mode: 210 8% 25% (muted slate)
-- Dark mode: 210 8% 75% (soft gray)
+- Light mode: 0 0% 9% (deep black)
+- Dark mode: 0 0% 95% (near white)
 
 **Background Colors:**
-- Light mode: 210 8% 97% (soft white)
-- Dark mode: 210 8% 12% (charcoal)
+- Light mode: 0 0% 100% (pure white)
+- Dark mode: 0 0% 6% (deep charcoal)
 
 **Accent Colors:**
-- Primary Blue: 215 70% 50% (modern blue)
-- Success: 140 25% 50% (calm green)
-- Warning: 45 40% 55% (gentle amber)
+- Primary: Monochromatic grayscale system
+- Secondary: 0 0% 96% (subtle gray)
+- Borders: 0 0% 93% (very light gray)
+- Muted: 0 0% 45% (medium gray for supporting text)
 
 ### B. Typography
 **Primary Font:** Inter (Google Fonts)
@@ -59,23 +60,23 @@
 - No decorative elements or heavy styling
 
 **Forms:**
-- Minimal input styling with subtle focus states
-- Primary actions use modern blue color
-- Clean, borderless textarea for discussions
+- Ultra-minimal input styling with subtle gray focus states
+- Primary actions use deep black backgrounds
+- Clean, borderless design with maximum whitespace
 
 ### E. Visual Treatments
 
-**Minimalist Construction Theme:**
-- Remove blueprint patterns and decorative elements
-- Use simple line dividers instead of themed separators
-- Minimal iconography - prefer text labels
-- Subdued tool icons only where functionally necessary
+**Threads-Style Minimalism:**
+- Eliminate all decorative elements and visual noise
+- Use hair-thin gray lines for minimal separation
+- Text-only navigation with subtle hover states
+- Pure grayscale iconography when absolutely necessary
 
 **Content Hierarchy:**
-- Rely on typography scale and spacing for hierarchy
-- Minimal use of background colors
-- Clean whitespace-driven layout
-- Consistent, calm visual rhythm
+- Rely on typography weight and spacing exclusively
+- Avoid background colors except pure white/black
+- Maximum whitespace for breathing room
+- Threads-like clean visual rhythm
 
 ### Images
 **No Hero Section:** Landing directly on discussion feed for immediate content access

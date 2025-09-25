@@ -1,61 +1,46 @@
-import { Home, Search, PlusCircle, Hammer, Wrench, Sofa, Bell, User, Settings } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
-  SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 
 const navigationItems = [
-  { title: "Главная", icon: Home, url: "/", active: true },
-  { title: "Поиск", icon: Search, url: "/search" },
-  { title: "Уведомления", icon: Bell, url: "/notifications" },
-];
-
-const categoryItems = [
-  { title: "Строительство", icon: Hammer, url: "/construction" },
-  { title: "Мебель", icon: Sofa, url: "/furniture" },
-  { title: "Услуги", icon: Wrench, url: "/services" },
-];
-
-const userItems = [
-  { title: "Профиль", icon: User, url: "/profile" },
-  { title: "Настройки", icon: Settings, url: "/settings" },
+  { title: "Главная", url: "/", active: true },
+  { title: "Строительство", url: "/construction" },
+  { title: "Мебель", url: "/furniture" },
+  { title: "Услуги", url: "/services" },
 ];
 
 export default function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <Hammer className="h-4 w-4" />
-          </div>
-          <span className="text-lg font-semibold">BuildTalk</span>
-        </div>
+      <SidebarHeader className="px-6 py-8">
+        <a href="/" className="text-xl font-semibold text-foreground">
+          BuildTalk
+        </a>
       </SidebarHeader>
       
-      <SidebarContent>
+      <SidebarContent className="px-6">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     asChild 
                     isActive={item.active}
                     data-testid={`nav-${item.title.toLowerCase()}`}
+                    className="px-0 py-3 hover:bg-transparent hover:text-foreground data-[active=true]:bg-transparent data-[active=true]:font-medium"
                   >
-                    <a href={item.url}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
+                    <a href={item.url} className="text-sm">
+                      {item.title}
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -64,28 +49,15 @@ export default function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel>Категории</SidebarGroupLabel>
+        <SidebarGroup className="mt-8">
           <SidebarGroupContent>
-            <SidebarMenu>
-              {categoryItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild data-testid={`category-${item.title.toLowerCase()}`}>
-                    <a href={item.url}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <Button asChild className="w-full justify-start gap-2" data-testid="button-create-thread">
-              <a href="/create">
+            <Button 
+              asChild 
+              variant="outline" 
+              className="w-full justify-center border-border bg-background hover:bg-muted text-sm"
+              data-testid="button-create-thread"
+            >
+              <a href="/create" className="flex items-center gap-2">
                 <PlusCircle className="h-4 w-4" />
                 Создать обсуждение
               </a>
@@ -93,21 +65,6 @@ export default function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-
-      <SidebarFooter className="p-4">
-        <SidebarMenu>
-          {userItems.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild data-testid={`user-${item.title.toLowerCase()}`}>
-                <a href={item.url}>
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.title}</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarFooter>
     </Sidebar>
   );
 }
