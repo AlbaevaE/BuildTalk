@@ -116,7 +116,7 @@ export default function HomePage() {
 
         <TabsContent value="recent" className="space-y-4 mt-6">
           <div className="space-y-4">
-            {mockThreads.slice().reverse().map((thread) => (
+            {mockThreads.map((thread) => (
               <ThreadCard key={thread.id} {...thread} />
             ))}
           </div>
