@@ -12,6 +12,7 @@ import CreateThread from "@/pages/CreateThread";
 import CategoryPage from "@/pages/CategoryPage";
 import RepliesPage from "@/pages/RepliesPage";
 import MyThreadsPage from "@/pages/MyThreadsPage";
+import LoginPage from "@/pages/LoginPage";
 import NotFound from "@/pages/not-found";
 import { useAuth, useLogout, getUserDisplayName, getUserAvatar } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={HomePage} />
+      <Route path="/login" component={LoginPage} />
       <Route path="/create" component={CreateThread} />
       <Route path="/replies" component={RepliesPage} />
       <Route path="/my-threads" component={MyThreadsPage} />
@@ -44,7 +46,7 @@ function UserMenu() {
   if (!user) {
     return (
       <Button asChild variant="ghost" size="sm" data-testid="button-login">
-        <a href="/auth/login">
+        <a href="/login">
           <LogIn className="w-4 h-4 mr-2" />
           Вход
         </a>

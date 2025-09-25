@@ -32,7 +32,7 @@ export default function CategoryPage() {
   }
   
   // Exclude special routes that aren't categories
-  const specialRoutes = ['replies', 'my-threads', 'create', 'thread'];
+  const specialRoutes = ['replies', 'my-threads', 'create', 'thread', 'login'];
   if (!category || specialRoutes.includes(category)) {
     return (
       <div className="container mx-auto px-4 py-8">
