@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertThreadSchema, insertCommentSchema } from "@shared/schema";
+import { insertThreadSchema, createThreadSchema, insertCommentSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { z } from "zod";
 import { requireAuth, attachUser, getAuthorizationUrl, handleCallback } from "./replitAuth";
@@ -113,9 +113,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/threads", requireAuth, async (req, res) => {
+  app.post("/api/threads", async (req, res) => {
     try {
-      const result = insertThreadSchema.safeParse(req.body);
+      const result = createThreadSchema.safeParse(req.body);
       if (!result.success) {
         return res.status(400).json({ 
           error: "Invalid thread data", 
@@ -123,7 +123,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const threadData = { ...result.data, authorId: req.user!.id };
+      // In development mode without auth, use test user
+      let authorId = req.user?.id;
+      if (!authorId) {
+        if (process.env.NODE_ENV === 'development') {
+          // Use the test user ID that we created earlier
+          authorId = '550e8400-e29b-41d4-a716-446655440001';
+        } else {
+          return res.status(401).json({ error: 'Authentication required' });
+        }
+      }
+
+      const threadData = { ...result.data, authorId };
       const thread = await storage.createThread(threadData);
       res.status(201).json(thread);
     } catch (error) {

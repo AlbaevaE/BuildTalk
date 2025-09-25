@@ -55,6 +55,11 @@ export const insertThreadSchema = createInsertSchema(threads).omit({
   createdAt: true,
 });
 
+// Client-side thread creation schema (authorId will be added by server from auth)
+export const createThreadSchema = insertThreadSchema.omit({
+  authorId: true,
+});
+
 export const insertCommentSchema = createInsertSchema(comments).omit({
   id: true,
   upvotes: true,
@@ -67,6 +72,7 @@ export const createCommentSchema = insertCommentSchema.omit({
 });
 
 export type InsertThread = z.infer<typeof insertThreadSchema>;
+export type CreateThread = z.infer<typeof createThreadSchema>;
 export type Thread = typeof threads.$inferSelect;
 export type InsertComment = z.infer<typeof insertCommentSchema>;
 export type CreateComment = z.infer<typeof createCommentSchema>;
