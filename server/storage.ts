@@ -11,7 +11,7 @@ export interface IStorage {
   upsertUser(user: UpsertUser): Promise<User>;
   
   // Thread methods
-  getThreads(): Promise<Thread[]>;
+  getThreads(category?: string): Promise<Thread[]>;
   getThread(id: string): Promise<Thread | undefined>;
   createThread(thread: InsertThread): Promise<Thread>;
   updateThread(id: string, updates: Partial<Omit<Thread, 'id' | 'createdAt'>>): Promise<Thread | undefined>;
@@ -51,7 +51,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Thread methods
-  async getThreads(): Promise<Thread[]> {
+  async getThreads(category?: string): Promise<Thread[]> {
+    if (category) {
+      return await db.select().from(threads)
+        .where(eq(threads.category, category))
+        .orderBy(threads.createdAt);
+    }
     return await db.select().from(threads).orderBy(threads.createdAt);
   }
 

@@ -92,7 +92,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Thread routes
   app.get("/api/threads", async (req, res) => {
     try {
-      const threads = await storage.getThreads();
+      const category = req.query.category as string | undefined;
+      const threads = await storage.getThreads(category);
       res.json(threads);
     } catch (error) {
       console.error("Error getting threads:", error);
