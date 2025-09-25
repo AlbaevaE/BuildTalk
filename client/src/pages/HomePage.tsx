@@ -97,9 +97,12 @@ export default function HomePage() {
 
         <TabsContent value="trending" className="space-y-4 mt-6">
           <div className="space-y-4">
-            {mockThreads.map((thread) => (
-              <ThreadCard key={thread.id} {...thread} />
-            ))}
+            {mockThreads
+              .slice()
+              .sort((a, b) => (b.upvotes + b.replies) - (a.upvotes + a.replies))
+              .map((thread) => (
+                <ThreadCard key={thread.id} {...thread} />
+              ))}
           </div>
           
           <Card className="border-dashed">
