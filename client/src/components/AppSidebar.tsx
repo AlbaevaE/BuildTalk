@@ -84,9 +84,11 @@ export default function AppSidebar() {
 
         <SidebarGroup>
           <SidebarGroupContent>
-            <Button className="w-full justify-start gap-2" data-testid="button-create-thread">
-              <PlusCircle className="h-4 w-4" />
-              Создать обсуждение
+            <Button asChild className="w-full justify-start gap-2" data-testid="button-create-thread">
+              <a href="/create">
+                <PlusCircle className="h-4 w-4" />
+                Создать обсуждение
+              </a>
             </Button>
           </SidebarGroupContent>
         </SidebarGroup>
