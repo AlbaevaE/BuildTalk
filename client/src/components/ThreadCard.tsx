@@ -49,7 +49,7 @@ export default function ThreadCard({
   return (
     <Link href={`/thread/${id}`}>
       <article 
-        className="py-4 px-0 border-b border-border cursor-pointer hover:bg-muted/30 transition-colors" 
+        className="p-4 mb-3 bg-card rounded-2xl border border-border cursor-pointer hover:bg-muted/30 transition-all duration-200 hover:shadow-sm" 
         data-testid={`thread-card-${id}`}
       >
         <div className="flex gap-3">
@@ -67,7 +67,7 @@ export default function ThreadCard({
               }</span>
               <button 
                 onClick={(e) => e.stopPropagation()}
-                className="ml-auto p-1 rounded-full hover:bg-muted transition-colors"
+                className="ml-auto p-2 rounded-xl hover:bg-muted transition-all duration-200"
                 data-testid={`button-thread-menu-${id}`}
               >
                 <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
@@ -83,17 +83,17 @@ export default function ThreadCard({
             </p>
             
             {images && images.length > 0 && (
-              <div className="grid grid-cols-2 gap-2 mb-3 rounded-lg overflow-hidden">
+              <div className="grid grid-cols-2 gap-3 mb-3">
                 {images.slice(0, 4).map((image, index) => (
                   <div 
                     key={index} 
-                    className="aspect-video bg-muted"
+                    className="aspect-video bg-muted rounded-2xl overflow-hidden"
                     data-testid={`image-thread-${id}-${index}`}
                   >
                     <img 
                       src={image} 
                       alt={`Thread image ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-200 hover:scale-105"
                     />
                   </div>
                 ))}
@@ -102,7 +102,7 @@ export default function ThreadCard({
             
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <button 
-                className={`flex items-center gap-1 hover:text-foreground transition-colors ${isUpvoted ? 'text-red-500' : ''}`}
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl hover:text-foreground hover:bg-muted/50 transition-all duration-200 ${isUpvoted ? 'text-red-500 bg-red-50 dark:bg-red-950' : ''}`}
                 onClick={handleUpvote}
                 data-testid={`button-upvote-${id}`}
               >
@@ -111,7 +111,7 @@ export default function ThreadCard({
               </button>
               
               <button 
-                className="flex items-center gap-1 hover:text-foreground transition-colors"
+                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:text-foreground hover:bg-muted/50 transition-all duration-200"
                 onClick={(e) => e.stopPropagation()}
                 data-testid={`button-reply-${id}`}
               >

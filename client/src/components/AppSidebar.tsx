@@ -30,14 +30,14 @@ export default function AppSidebar() {
       <SidebarContent className="px-6">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
+            <SidebarMenu className="space-y-2">
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     asChild 
                     isActive={item.active}
                     data-testid={`nav-${item.title.toLowerCase()}`}
-                    className="px-0 py-3 hover:bg-transparent hover:text-foreground data-[active=true]:bg-transparent data-[active=true]:font-medium"
+                    className="px-3 py-2 rounded-xl hover:bg-muted/50 hover:text-foreground data-[active=true]:bg-muted data-[active=true]:font-medium transition-all duration-200"
                   >
                     <a href={item.url} className="text-sm">
                       {item.title}
@@ -54,7 +54,7 @@ export default function AppSidebar() {
             <Button 
               asChild 
               variant="outline" 
-              className="w-full justify-center border-border bg-background hover:bg-muted text-sm"
+              className="w-full justify-center border-border bg-background hover:bg-muted text-sm rounded-xl transition-all duration-200"
               data-testid="button-create-thread"
             >
               <a href="/create" className="flex items-center gap-2">
