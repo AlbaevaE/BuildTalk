@@ -104,17 +104,6 @@ export default function HomePage() {
                 <ThreadCard key={thread.id} {...thread} />
               ))}
           </div>
-          
-          <Card className="border-dashed">
-            <CardContent className="flex items-center justify-center py-8">
-              <div className="text-center space-y-2">
-                <p className="text-muted-foreground">Вы просмотрели все популярные обсуждения</p>
-                <Button variant="outline" data-testid="button-load-more">
-                  Загрузить еще
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
 
         <TabsContent value="recent" className="space-y-4 mt-6">
