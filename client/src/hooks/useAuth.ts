@@ -1,22 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-
-export interface User {
-  id: string;
-  email: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  profileImageUrl: string | null;
-  createdAt: string | null;
-  updatedAt: string | null;
-}
+import { User } from '@shared/schema';
 
 // Hook to get current user
 export function useAuth() {
-  return useQuery({
-    queryKey: ['/api/user'],
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['/api/auth/user'],
     queryFn: async () => {
-      const response = await fetch('/api/user', {
+      const response = await fetch('/api/auth/user', {
         method: 'GET',
         credentials: 'include',
       });
@@ -41,6 +32,12 @@ export function useAuth() {
       return failureCount < 3;
     },
   });
+
+  return {
+    user,
+    isLoading,
+    isAuthenticated: !!user,
+  };
 }
 
 // Hook to logout user
@@ -49,16 +46,16 @@ export function useLogout() {
   
   return useMutation({
     mutationFn: async () => {
-      const response = await fetch('/auth/logout', {
+      const response = await fetch('/api/auth/logout', {
         method: 'POST',
         credentials: 'include',
       });
       
       if (!response.ok) {
-        throw new Error('Logout failed');
+        throw new Error('Logout request failed');
       }
       
-      return response.json();
+      return await response.json();
     },
     onSuccess: () => {
       // Clear all cached data on logout
@@ -77,7 +74,7 @@ export function useLogout() {
 
 // Helper function to get login URL
 export function getLoginUrl(): string {
-  return '/auth/login';
+  return '/api/login';
 }
 
 // Helper function to get user display name

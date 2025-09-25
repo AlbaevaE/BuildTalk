@@ -3,8 +3,6 @@ import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import { initializeReplitAuth } from "./replitAuth";
-
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -59,19 +57,6 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize Replit Auth (optional in development)
-  try {
-    if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
-      await initializeReplitAuth();
-      console.log('Replit Auth initialized successfully');
-    } else {
-      console.log('Replit Auth disabled - missing CLIENT_ID or CLIENT_SECRET');
-    }
-  } catch (error) {
-    console.error('Replit Auth initialization failed:', (error as Error).message);
-    console.log('Continuing without authentication...');
-  }
-  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

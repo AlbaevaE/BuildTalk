@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { insertThreadSchema, createThreadSchema, insertCommentSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { z } from "zod";
-import { requireAuth, attachUser, getAuthorizationUrl, handleCallback } from "./replitAuth";
+import { requireAuth, attachUser, loginWithEmail, simulateGoogleLogin } from "./simpleAuth";
 
 // Validation schemas for updates (no author fields - will be taken from authenticated user)
 const updateThreadSchema = z.object({
@@ -26,44 +26,41 @@ const upvoteSchema = z.object({
 }).strict();
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Attach user to all requests
+  // Simple auth middleware
   app.use('/api', attachUser);
   
-  // Authentication routes
-  app.get('/auth/login', (req, res) => {
+  // Simple authentication routes for development
+  app.post('/api/auth/login', async (req, res) => {
     try {
-      const authUrl = getAuthorizationUrl();
-      res.redirect(authUrl);
-    } catch (error) {
-      console.error('Error getting authorization URL:', error);
-      // Return user-friendly message when auth is disabled
-      res.status(200).json({ 
-        message: 'Authentication is currently disabled in development mode',
-        error: 'Please configure CLIENT_ID and CLIENT_SECRET to enable authentication'
-      });
-    }
-  });
-  
-  app.get('/auth/callback', async (req, res) => {
-    try {
-      const { code, state } = req.query;
-      if (!code || typeof code !== 'string') {
-        return res.status(400).json({ error: 'Missing authorization code' });
+      const { email, password, provider } = req.body;
+      // Only support email/password authentication
+      if (provider) {
+        return res.status(400).json({ error: 'Provider-based authentication not supported' });
       }
       
-      const user = await handleCallback(code, state as string);
-      (req as any).session.user = user;
-      res.redirect('/');
+      const user = await loginWithEmail(email, password);
+      
+      if (user) {
+        (req as any).session.user = user;
+        res.json({ success: true, user });
+      } else {
+        res.status(401).json({ error: 'Invalid credentials' });
+      }
     } catch (error) {
-      console.error('Error handling auth callback:', error);
-      res.status(200).json({ 
-        message: 'Authentication callback not available in development mode',
-        error: 'Please configure CLIENT_ID and CLIENT_SECRET to enable authentication'
-      });
+      console.error('Login error:', error);
+      res.status(500).json({ error: 'Login failed' });
     }
   });
-  
-  app.post('/auth/logout', (req, res) => {
+
+  app.get('/api/auth/user', (req, res) => {
+    if (req.user) {
+      res.json(req.user);
+    } else {
+      res.status(401).json({ message: 'Unauthorized' });
+    }
+  });
+
+  app.post('/api/auth/logout', (req, res) => {
     if ((req as any).session) {
       (req as any).session.destroy((err: any) => {
         if (err) {
@@ -73,19 +70,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json({ success: true });
       });
     } else {
-      // No session to destroy when auth is disabled
-      res.json({ 
-        success: true,
-        message: 'Logout completed (authentication disabled)'
-      });
-    }
-  });
-  
-  app.get('/api/user', (req, res) => {
-    if (req.user) {
-      res.json(req.user);
-    } else {
-      res.status(401).json({ error: 'Not authenticated' });
+      res.json({ success: true });
     }
   });
 
@@ -125,7 +110,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // In development mode without auth, use test user
-      let authorId = req.user?.id;
+      let authorId = (req.user as any)?.id;
       if (!authorId) {
         if (process.env.NODE_ENV === 'development') {
           // Use the test user ID that we created earlier
@@ -240,7 +225,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const commentWithAuthor = { ...result.data, authorId: req.user!.id };
+      const commentWithAuthor = { ...result.data, authorId: (req.user as any)!.id };
       const comment = await storage.createComment(commentWithAuthor);
       res.status(201).json(comment);
     } catch (error) {

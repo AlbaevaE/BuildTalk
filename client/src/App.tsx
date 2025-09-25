@@ -36,7 +36,7 @@ function Router() {
 }
 
 function UserMenu() {
-  const { data: user, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
   const logout = useLogout();
 
   if (isLoading) {
