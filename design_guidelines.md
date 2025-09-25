@@ -1,94 +1,89 @@
 # BuildTalk Design Guidelines
 
 ## Design Approach
-**Reference-Based Approach**: Drawing inspiration from **Linear** and **Notion** for their clean, professional interfaces that balance utility with visual appeal. These platforms successfully serve technical communities while maintaining excellent usability.
+**Hybrid Approach**: Minimal design system inspired by **Linear's** clean interface and **Notion's** content-first philosophy, optimized for calm, distraction-free discussions.
 
 ## Core Design Elements
 
 ### A. Color Palette
 **Primary Colors:**
-- Light mode: 220 15% 15% (deep slate)
-- Dark mode: 220 15% 85% (light slate)
+- Light mode: 210 8% 25% (muted slate)
+- Dark mode: 210 8% 75% (soft gray)
 
 **Background Colors:**
-- Light mode: 0 0% 98% (warm white)
-- Dark mode: 220 15% 8% (deep charcoal)
+- Light mode: 210 8% 97% (soft white)
+- Dark mode: 210 8% 12% (charcoal)
 
 **Accent Colors:**
-- Construction orange: 25 85% 55%
-- Success green: 140 65% 45%
-- Warning amber: 45 90% 50%
+- Muted construction: 25 35% 50% (soft terracotta)
+- Success: 140 25% 50% (calm green)
+- Warning: 45 40% 55% (gentle amber)
 
 ### B. Typography
 **Primary Font:** Inter (Google Fonts)
-- Headings: 600-700 weight
-- Body text: 400-500 weight
-- UI elements: 500 weight
-
-**Sizes:**
-- Hero/Page titles: text-3xl
-- Section headers: text-xl
-- Body text: text-base
-- UI labels: text-sm
+- Discussion titles: 500 weight, text-lg
+- Body text: 400 weight, text-base
+- Meta info: 400 weight, text-sm
+- UI labels: 500 weight, text-sm
 
 ### C. Layout System
-**Spacing Units:** Tailwind units of 2, 4, 6, 8, 12, 16
-- Tight spacing: p-2, m-2
-- Standard spacing: p-4, gap-4
-- Section spacing: py-8, my-12
-- Page margins: px-6 (mobile), px-16 (desktop)
+**Spacing Units:** Tailwind units of 2, 3, 4, 6, 8
+- Component padding: p-3, p-4
+- Content gaps: gap-3, gap-4
+- Section spacing: py-6, py-8
+- Container margins: px-4 (mobile), px-6 (desktop)
 
 ### D. Component Library
 
-**Navigation:**
-- Clean header with logo, search, and profile
-- Bottom tab navigation (mobile)
-- Sidebar navigation (desktop)
+**Header:**
+- Minimal sticky header with logo and user avatar only
+- No hero section - direct focus on content
+- Search integrated as subtle expandable field
 
-**Discussion Threads:**
-- Card-based layout with subtle borders
-- Avatar + username + timestamp header
-- Rich text content with media previews
-- Action buttons (reply, upvote) with icons
-- Nested reply indentation using left borders
+**Discussion Feed:**
+- Clean list layout with minimal card styling
+- Subtle dividing lines instead of heavy borders
+- Compact layout prioritizing readability
+- Voting arrows positioned left of content
+- Category tags as subtle text indicators
+
+**Thread Layout:**
+- Generous line spacing for comfortable reading
+- Minimal reply indentation using thin left borders
+- Subdued metadata (timestamps, usernames)
+- Clean reply forms without visual noise
+
+**Navigation:**
+- Simplified sidebar with essential categories only
+- Bottom tab navigation (mobile) with 4 key sections
+- No decorative elements or heavy styling
 
 **Forms:**
-- Rounded input fields with subtle shadows
-- Primary button: construction orange background
-- Secondary buttons: outline style with theme colors
-- File upload areas with drag-and-drop styling
-
-**Feed Components:**
-- Infinite scroll with skeleton loading states
-- Category tags as rounded badges
-- Upvote counters with heart/arrow icons
-- Media attachments in responsive grids
-
-**Modals & Overlays:**
-- Backdrop blur effects
-- Centered modals with rounded corners
-- Sheet-style modals (mobile)
+- Minimal input styling with subtle focus states
+- Primary actions use muted construction color
+- Clean, borderless textarea for discussions
 
 ### E. Visual Treatments
 
-**Professional Construction Theme:**
-- Subtle grid patterns in backgrounds
-- Blueprint-inspired dotted lines as dividers
-- Tool icons for categories (hammer, wrench, etc.)
-- Before/after photo layouts for project showcases
+**Minimalist Construction Theme:**
+- Remove blueprint patterns and decorative elements
+- Use simple line dividers instead of themed separators
+- Minimal iconography - prefer text labels
+- Subdued tool icons only where functionally necessary
 
 **Content Hierarchy:**
-- Clear visual separation between thread levels
-- Consistent spacing for readability
-- Strategic use of background colors for grouping
+- Rely on typography scale and spacing for hierarchy
+- Minimal use of background colors
+- Clean whitespace-driven layout
+- Consistent, calm visual rhythm
 
 ### Images
-**Hero Section:** Large construction site or workshop image with overlay text and call-to-action buttons (variant="outline" with blurred backgrounds)
+**No Hero Section:** Landing directly on discussion feed for immediate content access
 
-**Category Icons:** Tool-based iconography throughout (use Heroicons construction/tool subset)
+**User Avatars:** Small, circular profile images with no decorative borders
 
-**User-Generated Content:** Responsive image grids for project photos, blueprint previews, and progress updates
+**Content Images:** Simple, responsive embedding within discussions without fancy grid layouts
 
-**Profile Pictures:** Circular avatars with colored borders indicating user roles (orange for contractors, blue for homeowners, green for suppliers)
+**Category Indicators:** Text-based categories instead of icon-heavy approach, with optional small icons for quick recognition
 
-This design approach creates a professional, trustworthy platform that appeals to construction professionals while remaining accessible to DIY enthusiasts and homeowners.
+This refined approach creates a serene, focused environment that prioritizes content consumption and contribution while maintaining professional credibility through clean, purposeful design choices.
