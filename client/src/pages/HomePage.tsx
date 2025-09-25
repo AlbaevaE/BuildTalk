@@ -1,9 +1,11 @@
+import { useState } from "react";
 import ThreadCard from "@/components/ThreadCard";
 import SearchBar from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Flame, Clock } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Flame, Clock, Filter } from "lucide-react";
 
 // todo: remove mock functionality
 const mockThreads = [
@@ -75,11 +77,37 @@ const mockThreads = [
 ];
 
 export default function HomePage() {
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  // Filter threads based on category and search
+  const filteredThreads = mockThreads.filter(thread => {
+    const matchesCategory = selectedCategory === "all" || thread.category === selectedCategory;
+    const matchesSearch = searchQuery === "" || 
+      thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      thread.content.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
-      {/* Search Bar */}
-      <div className="flex justify-center">
-        <SearchBar />
+      {/* Search and Filter */}
+      <div className="flex flex-col gap-4 items-center">
+        <SearchBar onSearch={setSearchQuery} />
+        <div className="flex items-center gap-2">
+          <Filter className="h-4 w-4 text-muted-foreground" />
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="w-[200px]" data-testid="select-category-filter">
+              <SelectValue placeholder="Выберите категорию" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Все категории</SelectItem>
+              <SelectItem value="construction">Строительство</SelectItem>
+              <SelectItem value="furniture">Мебель</SelectItem>
+              <SelectItem value="services">Услуги</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Feed Tabs */}
@@ -97,20 +125,38 @@ export default function HomePage() {
 
         <TabsContent value="trending" className="space-y-4 mt-6">
           <div className="space-y-4">
-            {mockThreads
-              .slice()
-              .sort((a, b) => (b.upvotes + b.replies) - (a.upvotes + a.replies))
-              .map((thread) => (
-                <ThreadCard key={thread.id} {...thread} />
-              ))}
+            {filteredThreads.length > 0 ? (
+              filteredThreads
+                .slice()
+                .sort((a, b) => (b.upvotes + b.replies) - (a.upvotes + a.replies))
+                .map((thread) => (
+                  <ThreadCard key={thread.id} {...thread} />
+                ))
+            ) : (
+              <div className="text-center py-12 text-muted-foreground">
+                <p>Обсуждения не найдены</p>
+                <p className="text-sm mt-2">
+                  Попробуйте изменить фильтр или поисковый запрос
+                </p>
+              </div>
+            )}
           </div>
         </TabsContent>
 
         <TabsContent value="recent" className="space-y-4 mt-6">
           <div className="space-y-4">
-            {mockThreads.map((thread) => (
-              <ThreadCard key={thread.id} {...thread} />
-            ))}
+            {filteredThreads.length > 0 ? (
+              filteredThreads.map((thread) => (
+                <ThreadCard key={thread.id} {...thread} />
+              ))
+            ) : (
+              <div className="text-center py-12 text-muted-foreground">
+                <p>Обсуждения не найдены</p>
+                <p className="text-sm mt-2">
+                  Попробуйте изменить фильтр или поисковый запрос
+                </p>
+              </div>
+            )}
           </div>
         </TabsContent>
 

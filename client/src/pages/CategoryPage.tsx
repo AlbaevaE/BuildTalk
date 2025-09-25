@@ -22,7 +22,27 @@ const categoryDescriptions = {
 };
 
 export default function CategoryPage() {
-  const { category } = useParams<{ category: string }>();
+  const { category: urlCategory } = useParams<{ category: string }>();
+  
+  // Extract category from URL parameter or query string (for legacy URLs like /category?name=construction)
+  let category = urlCategory;
+  if (urlCategory === 'category') {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    category = urlSearchParams.get('name') || '';
+  }
+  
+  // Exclude special routes that aren't categories
+  const specialRoutes = ['replies', 'my-threads', 'create', 'thread'];
+  if (!category || specialRoutes.includes(category)) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Страница не найдена</h1>
+          <p className="text-muted-foreground">Запрашиваемая страница не существует.</p>
+        </div>
+      </div>
+    );
+  }
   
   if (!category || !categoryNames[category as keyof typeof categoryNames]) {
     return (

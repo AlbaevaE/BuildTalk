@@ -10,6 +10,8 @@ import HomePage from "@/pages/HomePage";
 import ThreadDetail from "@/pages/ThreadDetail";
 import CreateThread from "@/pages/CreateThread";
 import CategoryPage from "@/pages/CategoryPage";
+import RepliesPage from "@/pages/RepliesPage";
+import MyThreadsPage from "@/pages/MyThreadsPage";
 import NotFound from "@/pages/not-found";
 import { useAuth, useLogout, getUserDisplayName, getUserAvatar } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -22,6 +24,8 @@ function Router() {
     <Switch>
       <Route path="/" component={HomePage} />
       <Route path="/create" component={CreateThread} />
+      <Route path="/replies" component={RepliesPage} />
+      <Route path="/my-threads" component={MyThreadsPage} />
       <Route path="/thread/:id" component={ThreadDetail} />
       <Route path="/:category" component={CategoryPage} />
       <Route component={NotFound} />
