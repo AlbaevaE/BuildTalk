@@ -8,9 +8,7 @@ import AppSidebar from "@/components/AppSidebar";
 import ThemeToggle from "@/components/ThemeToggle";
 import HomePage from "@/pages/HomePage";
 import ThreadDetail from "@/pages/ThreadDetail";
-import HeroSection from "@/components/HeroSection";
 import NotFound from "@/pages/not-found";
-import { useState } from "react";
 import { useAuth, useLogout, getUserDisplayName, getUserAvatar } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -88,37 +86,10 @@ function UserMenu() {
 }
 
 function App() {
-  const [showLanding, setShowLanding] = useState(true);
-
   const style = {
     "--sidebar-width": "16rem",
     "--sidebar-width-icon": "3rem",
   };
-
-  if (showLanding) {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <div className="min-h-screen bg-background">
-            <HeroSection />
-            <div className="max-w-4xl mx-auto p-6">
-              <div className="text-center space-y-4">
-                <h2 className="text-2xl font-semibold">Готовы присоединиться к сообществу?</h2>
-                <Button 
-                  onClick={() => setShowLanding(false)}
-                  size="lg"
-                  data-testid="button-enter-app"
-                >
-                  Войти в BuildTalk
-                </Button>
-              </div>
-            </div>
-          </div>
-          <Toaster />
-        </TooltipProvider>
-      </QueryClientProvider>
-    );
-  }
 
   return (
     <QueryClientProvider client={queryClient}>
