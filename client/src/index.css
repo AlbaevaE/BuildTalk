@@ -32,7 +32,7 @@
 
   --sidebar-border: 210 6% 85%;
 
-  --sidebar-primary: 25 35% 50%;
+  --sidebar-primary: 215 70% 50%;
 
   --sidebar-primary-foreground: 210 8% 97%;
 
@@ -40,7 +40,7 @@
 
   --sidebar-accent-foreground: 210 8% 30%;
 
-  --sidebar-ring: 25 35% 50%;
+  --sidebar-ring: 215 70% 50%;
 
   --popover: 210 6% 92%;
 
@@ -48,7 +48,7 @@
 
   --popover-border: 210 6% 84%;
 
-  --primary: 25 35% 50%;
+  --primary: 215 70% 50%;
 
   --primary-foreground: 210 8% 97%;
 
@@ -69,8 +69,8 @@
   --destructive-foreground: 210 8% 97%;
 
   --input: 210 6% 75%;
-  --ring: 25 35% 50%;
-  --chart-1: 25 35% 50%;
+  --ring: 215 70% 50%;
+  --chart-1: 215 70% 50%;
   --chart-2: 140 25% 50%;
   --chart-3: 45 40% 55%;
   --chart-4: 210 30% 50%;
@@ -150,7 +150,7 @@
 
   --sidebar-border: 210 6% 25%;
 
-  --sidebar-primary: 25 35% 50%;
+  --sidebar-primary: 215 70% 50%;
 
   --sidebar-primary-foreground: 210 8% 12%;
 
@@ -158,7 +158,7 @@
 
   --sidebar-accent-foreground: 210 8% 70%;
 
-  --sidebar-ring: 25 35% 50%;
+  --sidebar-ring: 215 70% 50%;
 
   --popover: 210 6% 18%;
 
@@ -166,7 +166,7 @@
 
   --popover-border: 210 6% 25%;
 
-  --primary: 25 35% 50%;
+  --primary: 215 70% 50%;
 
   --primary-foreground: 210 8% 12%;
 
@@ -187,8 +187,8 @@
   --destructive-foreground: 210 8% 12%;
 
   --input: 210 6% 35%;
-  --ring: 25 35% 50%;
-  --chart-1: 25 35% 55%;
+  --ring: 215 70% 50%;
+  --chart-1: 215 70% 55%;
   --chart-2: 140 25% 55%;
   --chart-3: 45 40% 60%;
   --chart-4: 210 30% 55%;
@@ -207,7 +207,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border;
   }
 
   body {

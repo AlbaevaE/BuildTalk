@@ -15,7 +15,7 @@
 - Dark mode: 210 8% 12% (charcoal)
 
 **Accent Colors:**
-- Muted construction: 25 35% 50% (soft terracotta)
+- Primary Blue: 215 70% 50% (modern blue)
 - Success: 140 25% 50% (calm green)
 - Warning: 45 40% 55% (gentle amber)
 
@@ -60,7 +60,7 @@
 
 **Forms:**
 - Minimal input styling with subtle focus states
-- Primary actions use muted construction color
+- Primary actions use modern blue color
 - Clean, borderless textarea for discussions
 
 ### E. Visual Treatments
