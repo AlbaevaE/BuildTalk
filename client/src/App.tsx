@@ -13,6 +13,7 @@ import CategoryPage from "@/pages/CategoryPage";
 import RepliesPage from "@/pages/RepliesPage";
 import MyThreadsPage from "@/pages/MyThreadsPage";
 import LoginPage from "@/pages/LoginPage";
+import RegisterPage from "@/pages/RegisterPage";
 import NotFound from "@/pages/not-found";
 import { useAuth, useLogout, getUserDisplayName, getUserAvatar } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ function Router() {
     <Switch>
       <Route path="/" component={HomePage} />
       <Route path="/login" component={LoginPage} />
+      <Route path="/register" component={RegisterPage} />
       <Route path="/create" component={CreateThread} />
       <Route path="/replies" component={RepliesPage} />
       <Route path="/my-threads" component={MyThreadsPage} />
@@ -45,12 +47,20 @@ function UserMenu() {
 
   if (!user) {
     return (
-      <Button asChild variant="ghost" size="sm" data-testid="button-login">
-        <a href="/login">
-          <LogIn className="w-4 h-4 mr-2" />
-          Вход
-        </a>
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button asChild variant="ghost" size="sm" data-testid="button-login">
+          <a href="/login">
+            <LogIn className="w-4 h-4 mr-2" />
+            Вход
+          </a>
+        </Button>
+        <Button asChild variant="outline" size="sm" data-testid="button-register">
+          <a href="/register">
+            <User className="w-4 h-4 mr-2" />
+            Регистрация
+          </a>
+        </Button>
+      </div>
     );
   }
 

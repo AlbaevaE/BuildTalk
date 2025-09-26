@@ -7,20 +7,16 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Session configuration with PostgreSQL store
-const PgSession = connectPgSimple(session);
+// Session configuration - using MemoryStore temporarily while database connection is being fixed
+// TODO: Switch back to PostgreSQL store once database connection is working
+console.log('[DEBUG] Using MemoryStore for session management');
 app.use(session({
-  store: new PgSession({
-    conString: process.env.DATABASE_URL,
-    tableName: 'sessions',
-    createTableIfMissing: true,
-  }),
   secret: process.env.SESSION_SECRET!,
   resave: false,
   saveUninitialized: false,
   name: 'buildtalk.sid',
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: false, // Set to false for development to ensure cookies work
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   },

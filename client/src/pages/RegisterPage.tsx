@@ -1,25 +1,31 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { LogIn } from "lucide-react";
+import { UserPlus } from "lucide-react";
 import { useState } from "react";
 import { Link } from "wouter";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ 
+          email, 
+          password, 
+          firstName: firstName || undefined, 
+          lastName: lastName || undefined 
+        }),
         credentials: 'include',
       });
       
@@ -27,13 +33,12 @@ export default function LoginPage() {
         window.location.href = '/';
       } else {
         const error = await response.json();
-        alert(`Login failed: ${error.error}`);
+        alert(`Регистрация не удалась: ${error.error}`);
       }
     } catch (error) {
-      alert('Login failed: Network error');
+      alert('Регистрация не удалась: Ошибка сети');
     }
   };
-
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background p-4">
@@ -43,13 +48,34 @@ export default function LoginPage() {
             BuildTalk
           </CardTitle>
           <CardDescription className="text-base text-muted-foreground">
-            Сообщество ремонтщиков
+            Присоединяйтесь к сообществу ремонтщиков
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-
-          {/* Email/Password форма */}
-          <form onSubmit={handleEmailLogin} className="space-y-4">
+          
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstName">Имя</Label>
+              <Input
+                id="firstName"
+                type="text"
+                placeholder="Ваше имя"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                data-testid="input-firstname"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Фамилия</Label>
+              <Input
+                id="lastName"
+                type="text"
+                placeholder="Ваша фамилия"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                data-testid="input-lastname"
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -67,25 +93,26 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="Ваш пароль"
+                placeholder="Минимум 6 символов"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={6}
                 data-testid="input-password"
               />
             </div>
             <Button 
               type="submit" 
               className="w-full text-base font-medium"
-              data-testid="button-login-email"
+              data-testid="button-register"
             >
-              Войти
+              <UserPlus className="w-4 h-4 mr-2" />
+              Зарегистрироваться
             </Button>
           </form>
           
-          <div className="text-center text-sm text-muted-foreground space-y-2">
-            <p>Присоединяйтесь к обсуждениям о ремонте, мебели и услугах</p>
-            <p>Нет аккаунта? <Link href="/register"><span className="text-primary hover:underline cursor-pointer" data-testid="link-register">Зарегистрироваться</span></Link></p>
+          <div className="text-center text-sm text-muted-foreground">
+            <p>Уже есть аккаунт? <Link href="/login"><span className="text-primary hover:underline cursor-pointer" data-testid="link-login">Войти</span></Link></p>
           </div>
         </CardContent>
       </Card>

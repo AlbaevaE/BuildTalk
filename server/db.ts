@@ -11,5 +11,7 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
+console.log('[DEBUG] DATABASE_URL starts with:', process.env.DATABASE_URL?.substring(0, 50) + '...');
+
 export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 export const db = drizzle({ client: pool, schema });

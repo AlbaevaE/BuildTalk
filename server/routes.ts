@@ -1,10 +1,10 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertThreadSchema, createThreadSchema, insertCommentSchema } from "@shared/schema";
+import { insertThreadSchema, createThreadSchema, insertCommentSchema, createCommentSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { z } from "zod";
-import { requireAuth, attachUser, loginWithEmail, simulateGoogleLogin } from "./simpleAuth";
+import { requireAuth, attachUser, loginWithEmail, registerWithEmail } from "./simpleAuth";
 
 // Validation schemas for updates (no author fields - will be taken from authenticated user)
 const updateThreadSchema = z.object({
@@ -23,6 +23,14 @@ const updateCommentSchema = z.object({
 
 const upvoteSchema = z.object({
   upvotes: z.number().int().min(0).finite(),
+}).strict();
+
+// Registration validation schema
+const registerSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  firstName: z.string().min(1, "First name is required").optional(),
+  lastName: z.string().min(1, "Last name is required").optional(),
 }).strict();
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -71,6 +79,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } else {
       res.json({ success: true });
+    }
+  });
+
+  app.post('/api/auth/register', async (req, res) => {
+    try {
+      const result = registerSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ 
+          error: "Invalid registration data", 
+          details: fromZodError(result.error).toString() 
+        });
+      }
+
+      const { email, password, firstName, lastName } = result.data;
+      const user = await registerWithEmail(email, password, firstName, lastName);
+      
+      if (user) {
+        (req as any).session.user = user;
+        res.status(201).json({ success: true, user });
+      } else {
+        res.status(409).json({ error: 'User already exists with this email' });
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      res.status(500).json({ error: 'Registration failed' });
     }
   });
 
@@ -216,8 +249,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Thread not found" });
       }
 
-      const commentData = { ...req.body, threadId: req.params.threadId };
-      const result = insertCommentSchema.safeParse(commentData);
+      const result = createCommentSchema.safeParse(req.body);
       if (!result.success) {
         return res.status(400).json({ 
           error: "Invalid comment data", 
@@ -225,7 +257,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const commentWithAuthor = { ...result.data, authorId: (req.user as any)!.id };
+      const commentWithAuthor = { ...result.data, threadId: req.params.threadId, authorId: (req.user as any)!.id };
       const comment = await storage.createComment(commentWithAuthor);
       res.status(201).json(comment);
     } catch (error) {
