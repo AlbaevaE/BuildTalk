@@ -44,11 +44,33 @@ Preferred communication style: Simple, everyday language.
 - Role-based user identification with visual badges
 - Session management prepared for future implementation
 
+## Recent Updates (September 2025)
+
+### Database Integration Setup
+- **Supabase Integration**: Connected application to Supabase PostgreSQL database
+- **Database Schema**: Complete schema defined for all BuildTalk features:
+  - `users` - User profiles with karma, roles, bio, privacy settings
+  - `threads` - Discussion posts with categories (construction, furniture, services)
+  - `comments` - Nested replies to threads
+  - `votes` - Upvote/downvote system for threads and comments
+  - `achievements` - Construction-themed achievement system based on karma levels
+  - `user_achievements` - User progress tracking
+  - `bookmarks` - Save favorite threads and comments
+  - `sessions` - Authentication session management
+- **SQL Script**: Complete table creation script available in `create-tables.sql`
+- **Storage Layer**: Dual storage implementation (MemStorage for development, DatabaseStorage for production)
+
+### Profile System Enhancement
+- **Real API Integration**: ProfilePage now uses live API calls instead of mock data
+- **Bug Fixes**: Resolved critical MemStorage issues with boolean values and TypeScript typing
+- **Data-Testid Attributes**: Added comprehensive test identifiers for all interactive elements
+
 ## External Dependencies
 
 ### Database & ORM
-- **@neondatabase/serverless**: Neon PostgreSQL serverless database connection
-- **drizzle-orm**: Type-safe ORM with PostgreSQL dialect
+- **postgres**: PostgreSQL client for Node.js
+- **@types/pg**: TypeScript definitions for PostgreSQL
+- **drizzle-orm**: Type-safe ORM with PostgreSQL dialect using postgres-js adapter
 - **drizzle-kit**: Database migration and schema management tools
 
 ### UI Components & Styling

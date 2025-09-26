@@ -4,8 +4,50 @@ import {
   type UpdateUserProfile, users, threads, comments, votes, achievements, userAchievements, bookmarks 
 } from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, sql, desc, and, count } from "drizzle-orm";
 import { randomUUID } from "crypto";
+
+export interface IStorage {
+  // User methods
+  getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  upsertUser(userData: UpsertUser): Promise<User>;
+  updateUserProfile(userId: string, updates: UpdateUserProfile): Promise<User | undefined>;
+
+  // Thread methods
+  getThreads(category?: string): Promise<Thread[]>;
+  getThread(id: string): Promise<Thread | undefined>;
+  createThread(threadData: InsertThread): Promise<Thread>;
+  updateThreadUpvotes(id: string, upvotes: number): Promise<Thread | undefined>;
+
+  // Comment methods
+  getComments(threadId: string): Promise<Comment[]>;
+  createComment(commentData: InsertComment): Promise<Comment>;
+  updateCommentUpvotes(id: string, upvotes: number): Promise<Comment | undefined>;
+
+  // Vote methods
+  getVote(userId: string, targetType: string, targetId: string): Promise<Vote | undefined>;
+  createOrUpdateVote(voteData: CreateVote): Promise<Vote>;
+  removeVote(userId: string, targetType: string, targetId: string): Promise<boolean>;
+
+  // Achievement methods
+  getAllAchievements(): Promise<Achievement[]>;
+  getUserAchievements(userId: string): Promise<UserAchievement[]>;
+  createUserAchievement(userId: string, achievementId: string): Promise<UserAchievement>;
+
+  // Bookmark methods
+  getBookmarks(userId: string): Promise<Bookmark[]>;
+  createBookmark(bookmarkData: CreateBookmark): Promise<Bookmark>;
+  removeBookmark(userId: string, targetType: string, targetId: string): Promise<boolean>;
+
+  // Stats methods
+  getUserStats(userId: string): Promise<{
+    threadsCount: number;
+    commentsCount: number;
+    bestAnswersCount: number;
+    totalUpvotes: number;
+  }>;
+}
 
 // Temporary in-memory storage for testing while database connection is being fixed
 class MemStorage implements IStorage {
@@ -468,7 +510,6 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-// Use memory storage temporarily while database connection is being fixed
-// TODO: Switch back to DatabaseStorage once database connection is working
+// For now, use MemStorage until we properly set up database tables
 export const storage = new MemStorage();
 console.log('[DEBUG] Using MemStorage for temporary testing');
