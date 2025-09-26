@@ -1,7 +1,10 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertThreadSchema, createThreadSchema, insertCommentSchema, createCommentSchema } from "@shared/schema";
+import { 
+  insertThreadSchema, createThreadSchema, insertCommentSchema, createCommentSchema,
+  updateUserProfileSchema, createVoteSchema, createBookmarkSchema
+} from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { z } from "zod";
 import { requireAuth, attachUser, loginWithEmail, registerWithEmail } from "./simpleAuth";
@@ -318,6 +321,164 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting comment:", error);
       res.status(500).json({ error: "Failed to delete comment" });
+    }
+  });
+
+  // Profile endpoints
+  app.get("/api/profile", requireAuth, async (req, res) => {
+    try {
+      const userId = (req.user as any)?.id;
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Get user statistics
+      const threads = await storage.getThreads();
+      const userThreads = threads.filter(t => t.authorId === userId);
+      
+      // Calculate achievements based on karma
+      const achievements = [
+        { name: "Что-то понимающий", requirement: 10, earned: user.karma >= 10 },
+        { name: "Можно доверять", requirement: 30, earned: user.karma >= 30 },
+        { name: "Отвечает по делу", requirement: 50, earned: user.karma >= 50 },
+        { name: "Эксперт по ремонту", requirement: 100, earned: user.karma >= 100 },
+        { name: "Мастер на все руки", requirement: 300, earned: user.karma >= 300 },
+        { name: "Прораб", requirement: 500, earned: user.karma >= 500 },
+        { name: "Гуру ремонта", requirement: 1000, earned: user.karma >= 1000 }
+      ];
+
+      const profile = {
+        ...user,
+        threadsCount: userThreads.length,
+        commentsCount: 0, // Will be calculated when comments are linked to users
+        bestAnswersCount: 0, // Will be calculated when voting system is implemented
+        achievements: achievements.filter(a => a.earned),
+        nextAchievement: achievements.find(a => !a.earned)
+      };
+
+      res.json(profile);
+    } catch (error) {
+      console.error("Error getting profile:", error);
+      res.status(500).json({ error: "Failed to get profile" });
+    }
+  });
+
+  app.patch("/api/profile", requireAuth, async (req, res) => {
+    try {
+      const userId = (req.user as any)?.id;
+      const result = updateUserProfileSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ 
+          error: "Invalid profile data", 
+          details: fromZodError(result.error).toString() 
+        });
+      }
+
+      const updatedUser = await storage.updateUserProfile(userId, result.data);
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({ error: "Failed to update profile" });
+    }
+  });
+
+  // Vote endpoints
+  app.post("/api/votes", requireAuth, async (req, res) => {
+    try {
+      const userId = (req.user as any)?.id;
+      const result = createVoteSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ 
+          error: "Invalid vote data", 
+          details: fromZodError(result.error).toString() 
+        });
+      }
+
+      // Check if user already voted for this target
+      const existingVote = await storage.getVoteByUserAndTarget(
+        userId, 
+        result.data.targetType, 
+        result.data.targetId
+      );
+
+      if (existingVote) {
+        if (existingVote.voteType === result.data.voteType) {
+          // Same vote type - remove vote
+          await storage.deleteVote(existingVote.id);
+          return res.status(200).json({ message: "Vote removed" });
+        } else {
+          // Different vote type - update vote
+          await storage.deleteVote(existingVote.id);
+        }
+      }
+
+      const voteData = { ...result.data, userId };
+      const vote = await storage.createVote(voteData);
+      res.status(201).json(vote);
+    } catch (error) {
+      console.error("Error creating vote:", error);
+      res.status(500).json({ error: "Failed to create vote" });
+    }
+  });
+
+  app.get("/api/votes/:targetType/:targetId", async (req, res) => {
+    try {
+      const { targetType, targetId } = req.params;
+      const counts = await storage.getVoteCountsByTarget(targetType, targetId);
+      res.json(counts);
+    } catch (error) {
+      console.error("Error getting vote counts:", error);
+      res.status(500).json({ error: "Failed to get vote counts" });
+    }
+  });
+
+  // Bookmark endpoints
+  app.post("/api/bookmarks", requireAuth, async (req, res) => {
+    try {
+      const userId = (req.user as any)?.id;
+      const result = createBookmarkSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ 
+          error: "Invalid bookmark data", 
+          details: fromZodError(result.error).toString() 
+        });
+      }
+
+      // Check if already bookmarked
+      const isBookmarked = await storage.isBookmarked(
+        userId, 
+        result.data.targetType, 
+        result.data.targetId
+      );
+
+      if (isBookmarked) {
+        // Remove bookmark
+        await storage.deleteBookmark(userId, result.data.targetType, result.data.targetId);
+        return res.status(200).json({ message: "Bookmark removed" });
+      } else {
+        // Add bookmark
+        const bookmarkData = { ...result.data, userId };
+        const bookmark = await storage.createBookmark(bookmarkData);
+        res.status(201).json(bookmark);
+      }
+    } catch (error) {
+      console.error("Error creating bookmark:", error);
+      res.status(500).json({ error: "Failed to create bookmark" });
+    }
+  });
+
+  app.get("/api/bookmarks", requireAuth, async (req, res) => {
+    try {
+      const userId = (req.user as any)?.id;
+      const bookmarks = await storage.getUserBookmarks(userId);
+      res.json(bookmarks);
+    } catch (error) {
+      console.error("Error getting bookmarks:", error);
+      res.status(500).json({ error: "Failed to get bookmarks" });
     }
   });
 

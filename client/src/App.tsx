@@ -12,6 +12,7 @@ import CreateThread from "@/pages/CreateThread";
 import CategoryPage from "@/pages/CategoryPage";
 import RepliesPage from "@/pages/RepliesPage";
 import MyThreadsPage from "@/pages/MyThreadsPage";
+import ProfilePage from "@/pages/ProfilePage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import NotFound from "@/pages/not-found";
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/create" component={CreateThread} />
       <Route path="/replies" component={RepliesPage} />
       <Route path="/my-threads" component={MyThreadsPage} />
+      <Route path="/profile" component={ProfilePage} />
       <Route path="/thread/:id" component={ThreadDetail} />
       <Route path="/:category" component={CategoryPage} />
       <Route component={NotFound} />

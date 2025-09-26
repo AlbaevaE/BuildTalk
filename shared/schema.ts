@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, timestamp, jsonb, index } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, timestamp, jsonb, index, boolean, unique } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -24,6 +24,10 @@ export const users = pgTable("users", {
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
   password: varchar("password"), // For email/password authentication
+  karma: integer("karma").notNull().default(0), // Карма пользователя
+  role: varchar("role", { length: 50 }).default("diy"), // contractor, homeowner, supplier, architect, diy
+  bio: text("bio"), // Описание профиля
+  isProfilePublic: boolean("is_profile_public").notNull().default(true), // Видимость профиля
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -50,6 +54,53 @@ export const comments = pgTable("comments", {
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
 
+// Голосование за посты и комментарии
+export const votes = pgTable("votes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  targetType: varchar("target_type", { length: 20 }).notNull(), // 'thread' или 'comment'
+  targetId: varchar("target_id").notNull(), // ID поста или комментария
+  voteType: varchar("vote_type", { length: 10 }).notNull(), // 'up' или 'down'
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+}, (table) => [
+  // Один пользователь может голосовать только один раз за конкретный объект
+  unique().on(table.userId, table.targetType, table.targetId)
+]);
+
+// Достижения
+export const achievements = pgTable("achievements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description").notNull(),
+  icon: varchar("icon", { length: 50 }).notNull(), // Иконка достижения
+  category: varchar("category", { length: 50 }).notNull(), // 'karma', 'content', 'questions', 'activity', 'help'
+  requirement: integer("requirement").notNull(), // Количество для получения
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+});
+
+// Достижения пользователей
+export const userAchievements = pgTable("user_achievements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  achievementId: varchar("achievement_id").notNull().references(() => achievements.id),
+  earnedAt: timestamp("earned_at").notNull().default(sql`now()`),
+}, (table) => [
+  // Пользователь может получить каждое достижение только один раз
+  unique().on(table.userId, table.achievementId)
+]);
+
+// Закладки
+export const bookmarks = pgTable("bookmarks", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  targetType: varchar("target_type", { length: 20 }).notNull(), // 'thread' или 'comment'
+  targetId: varchar("target_id").notNull(), // ID поста или комментария
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+}, (table) => [
+  // Один пользователь может добавить одну закладку на объект только один раз
+  unique().on(table.userId, table.targetType, table.targetId)
+]);
+
 export const insertThreadSchema = createInsertSchema(threads).omit({
   id: true,
   upvotes: true,
@@ -73,9 +124,42 @@ export const createCommentSchema = insertCommentSchema.omit({
   threadId: true,
 });
 
+// Схемы для создания
+export const createVoteSchema = createInsertSchema(votes).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const createBookmarkSchema = createInsertSchema(bookmarks).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const createAchievementSchema = createInsertSchema(achievements).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const updateUserProfileSchema = createInsertSchema(users).omit({
+  id: true,
+  email: true,
+  password: true,
+  createdAt: true,
+  updatedAt: true,
+}).partial();
+
+// Типы для TypeScript
 export type InsertThread = z.infer<typeof insertThreadSchema>;
 export type CreateThread = z.infer<typeof createThreadSchema>;
 export type Thread = typeof threads.$inferSelect;
 export type InsertComment = z.infer<typeof insertCommentSchema>;
 export type CreateComment = z.infer<typeof createCommentSchema>;
 export type Comment = typeof comments.$inferSelect;
+
+export type Vote = typeof votes.$inferSelect;
+export type CreateVote = z.infer<typeof createVoteSchema>;
+export type Achievement = typeof achievements.$inferSelect;
+export type UserAchievement = typeof userAchievements.$inferSelect;
+export type Bookmark = typeof bookmarks.$inferSelect;
+export type CreateBookmark = z.infer<typeof createBookmarkSchema>;
+export type UpdateUserProfile = z.infer<typeof updateUserProfileSchema>;

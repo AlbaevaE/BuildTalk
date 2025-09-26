@@ -1,4 +1,8 @@
-import { type User, type UpsertUser, type Thread, type InsertThread, type Comment, type InsertComment, users, threads, comments } from "@shared/schema";
+import { 
+  type User, type UpsertUser, type Thread, type InsertThread, type Comment, type InsertComment,
+  type Vote, type CreateVote, type Achievement, type UserAchievement, type Bookmark, type CreateBookmark,
+  type UpdateUserProfile, users, threads, comments, votes, achievements, userAchievements, bookmarks 
+} from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "crypto";
@@ -9,6 +13,10 @@ class MemStorage implements IStorage {
   private usersByEmail: Map<string, User> = new Map();
   private threads: Map<string, Thread> = new Map();
   private comments: Map<string, Comment> = new Map();
+  private votes: Map<string, Vote> = new Map();
+  private achievements: Map<string, Achievement> = new Map();
+  private userAchievements: Map<string, UserAchievement> = new Map();
+  private bookmarks: Map<string, Bookmark> = new Map();
 
   async getUser(id: string): Promise<User | undefined> {
     return this.users.get(id);
@@ -44,6 +52,10 @@ class MemStorage implements IStorage {
         lastName: userData.lastName || null,
         profileImageUrl: userData.profileImageUrl || null,
         password: userData.password || null,
+        karma: userData.karma ?? 0,
+        role: userData.role ?? "diy",
+        bio: userData.bio ?? null,
+        isProfilePublic: userData.isProfilePublic ?? true,
         createdAt: now,
         updatedAt: now,
       };
@@ -142,6 +154,98 @@ class MemStorage implements IStorage {
   async deleteComment(id: string): Promise<boolean> {
     return this.comments.delete(id);
   }
+
+  // Profile methods
+  async updateUserProfile(userId: string, updates: UpdateUserProfile): Promise<User | undefined> {
+    const existingUser = this.users.get(userId);
+    if (!existingUser) return undefined;
+    
+    const updatedUser = { ...existingUser, ...updates, updatedAt: new Date() };
+    this.users.set(userId, updatedUser);
+    if (updatedUser.email) {
+      this.usersByEmail.set(updatedUser.email, updatedUser);
+    }
+    return updatedUser;
+  }
+
+  // Vote methods
+  async createVote(voteData: CreateVote): Promise<Vote> {
+    const id = randomUUID();
+    const now = new Date();
+    const vote: Vote = { ...voteData, id, createdAt: now };
+    this.votes.set(id, vote);
+    return vote;
+  }
+
+  async getVoteByUserAndTarget(userId: string, targetType: string, targetId: string): Promise<Vote | undefined> {
+    return Array.from(this.votes.values()).find(vote => 
+      vote.userId === userId && vote.targetType === targetType && vote.targetId === targetId
+    );
+  }
+
+  async deleteVote(id: string): Promise<boolean> {
+    return this.votes.delete(id);
+  }
+
+  async getVoteCountsByTarget(targetType: string, targetId: string): Promise<{ upvotes: number, downvotes: number }> {
+    const targetVotes = Array.from(this.votes.values()).filter(vote => 
+      vote.targetType === targetType && vote.targetId === targetId
+    );
+    const upvotes = targetVotes.filter(vote => vote.voteType === 'up').length;
+    const downvotes = targetVotes.filter(vote => vote.voteType === 'down').length;
+    return { upvotes, downvotes };
+  }
+
+  // Achievement methods
+  async getAchievements(): Promise<Achievement[]> {
+    return Array.from(this.achievements.values());
+  }
+
+  async getUserAchievements(userId: string): Promise<UserAchievement[]> {
+    return Array.from(this.userAchievements.values()).filter(ua => ua.userId === userId);
+  }
+
+  async awardAchievement(userId: string, achievementId: string): Promise<UserAchievement> {
+    const id = randomUUID();
+    const now = new Date();
+    const userAchievement: UserAchievement = {
+      id,
+      userId,
+      achievementId,
+      earnedAt: now
+    };
+    this.userAchievements.set(id, userAchievement);
+    return userAchievement;
+  }
+
+  // Bookmark methods
+  async createBookmark(bookmarkData: CreateBookmark): Promise<Bookmark> {
+    const id = randomUUID();
+    const now = new Date();
+    const bookmark: Bookmark = { ...bookmarkData, id, createdAt: now };
+    this.bookmarks.set(id, bookmark);
+    return bookmark;
+  }
+
+  async deleteBookmark(userId: string, targetType: string, targetId: string): Promise<boolean> {
+    const bookmark = Array.from(this.bookmarks.values()).find(b => 
+      b.userId === userId && b.targetType === targetType && b.targetId === targetId
+    );
+    if (bookmark) {
+      return this.bookmarks.delete(bookmark.id);
+    }
+    return false;
+  }
+
+  async getUserBookmarks(userId: string): Promise<Bookmark[]> {
+    return Array.from(this.bookmarks.values()).filter(b => b.userId === userId);
+  }
+
+  async isBookmarked(userId: string, targetType: string, targetId: string): Promise<boolean> {
+    return Array.from(this.bookmarks.values()).some(b => 
+      b.userId === userId && b.targetType === targetType && b.targetId === targetId
+    );
+  }
 }
 
 // Interface for storage operations
@@ -151,6 +255,7 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  updateUserProfile(userId: string, updates: UpdateUserProfile): Promise<User | undefined>;
   
   // Thread methods
   getThreads(category?: string): Promise<Thread[]>;
@@ -167,6 +272,23 @@ export interface IStorage {
   updateComment(id: string, updates: Partial<Omit<Comment, 'id' | 'createdAt' | 'threadId'>>): Promise<Comment | undefined>;
   updateCommentUpvotes(id: string, upvotes: number): Promise<Comment | undefined>;
   deleteComment(id: string): Promise<boolean>;
+  
+  // Vote methods
+  createVote(voteData: CreateVote): Promise<Vote>;
+  getVoteByUserAndTarget(userId: string, targetType: string, targetId: string): Promise<Vote | undefined>;
+  deleteVote(id: string): Promise<boolean>;
+  getVoteCountsByTarget(targetType: string, targetId: string): Promise<{ upvotes: number, downvotes: number }>;
+  
+  // Achievement methods
+  getAchievements(): Promise<Achievement[]>;
+  getUserAchievements(userId: string): Promise<UserAchievement[]>;
+  awardAchievement(userId: string, achievementId: string): Promise<UserAchievement>;
+  
+  // Bookmark methods
+  createBookmark(bookmarkData: CreateBookmark): Promise<Bookmark>;
+  deleteBookmark(userId: string, targetType: string, targetId: string): Promise<boolean>;
+  getUserBookmarks(userId: string): Promise<Bookmark[]>;
+  isBookmarked(userId: string, targetType: string, targetId: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -291,6 +413,58 @@ export class DatabaseStorage implements IStorage {
   async deleteComment(id: string): Promise<boolean> {
     const result = await db.delete(comments).where(eq(comments.id, id));
     return (result.rowCount || 0) > 0;
+  }
+
+  // Profile methods (TODO: Implement when database is connected)
+  async updateUserProfile(userId: string, updates: UpdateUserProfile): Promise<User | undefined> {
+    throw new Error("updateUserProfile not implemented in DatabaseStorage yet");
+  }
+
+  // Vote methods (TODO: Implement when database is connected)
+  async createVote(voteData: CreateVote): Promise<Vote> {
+    throw new Error("createVote not implemented in DatabaseStorage yet");
+  }
+
+  async getVoteByUserAndTarget(userId: string, targetType: string, targetId: string): Promise<Vote | undefined> {
+    throw new Error("getVoteByUserAndTarget not implemented in DatabaseStorage yet");
+  }
+
+  async deleteVote(id: string): Promise<boolean> {
+    throw new Error("deleteVote not implemented in DatabaseStorage yet");
+  }
+
+  async getVoteCountsByTarget(targetType: string, targetId: string): Promise<{ upvotes: number, downvotes: number }> {
+    throw new Error("getVoteCountsByTarget not implemented in DatabaseStorage yet");
+  }
+
+  // Achievement methods (TODO: Implement when database is connected)
+  async getAchievements(): Promise<Achievement[]> {
+    throw new Error("getAchievements not implemented in DatabaseStorage yet");
+  }
+
+  async getUserAchievements(userId: string): Promise<UserAchievement[]> {
+    throw new Error("getUserAchievements not implemented in DatabaseStorage yet");
+  }
+
+  async awardAchievement(userId: string, achievementId: string): Promise<UserAchievement> {
+    throw new Error("awardAchievement not implemented in DatabaseStorage yet");
+  }
+
+  // Bookmark methods (TODO: Implement when database is connected)
+  async createBookmark(bookmarkData: CreateBookmark): Promise<Bookmark> {
+    throw new Error("createBookmark not implemented in DatabaseStorage yet");
+  }
+
+  async deleteBookmark(userId: string, targetType: string, targetId: string): Promise<boolean> {
+    throw new Error("deleteBookmark not implemented in DatabaseStorage yet");
+  }
+
+  async getUserBookmarks(userId: string): Promise<Bookmark[]> {
+    throw new Error("getUserBookmarks not implemented in DatabaseStorage yet");
+  }
+
+  async isBookmarked(userId: string, targetType: string, targetId: string): Promise<boolean> {
+    throw new Error("isBookmarked not implemented in DatabaseStorage yet");
   }
 }
 

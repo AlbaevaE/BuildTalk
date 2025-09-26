@@ -81,10 +81,13 @@ export default function AppSidebar() {
             <SidebarMenu className="flex flex-col gap-2">
               <SidebarMenuItem>
                 <SidebarMenuButton 
+                  asChild
                   data-testid="button-profile"
                   className="rounded-xl hover:bg-muted/50 w-10 h-10 p-2"
                 >
-                  <User className="h-5 w-5" />
+                  <a href="/profile">
+                    <User className="h-5 w-5" />
+                  </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
