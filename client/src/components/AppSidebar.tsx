@@ -1,4 +1,4 @@
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Settings, User } from "lucide-react";
 import { useLocation } from "wouter";
 import {
   Sidebar,
@@ -9,6 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 
@@ -73,6 +74,31 @@ export default function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      
+      <SidebarFooter className="px-6 py-4">
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu className="flex flex-row gap-2">
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  data-testid="button-settings"
+                  className="rounded-xl hover:bg-muted/50 w-10 h-10 p-2"
+                >
+                  <Settings className="h-5 w-5" />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  data-testid="button-profile"
+                  className="rounded-xl hover:bg-muted/50 w-10 h-10 p-2"
+                >
+                  <User className="h-5 w-5" />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarFooter>
     </Sidebar>
   );
 }
