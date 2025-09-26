@@ -78,21 +78,21 @@ export default function AppSidebar() {
       <SidebarFooter className="px-6 py-4">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className="flex flex-row gap-2">
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  data-testid="button-settings"
-                  className="rounded-xl hover:bg-muted/50 w-10 h-10 p-2"
-                >
-                  <Settings className="h-5 w-5" />
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+            <SidebarMenu className="flex flex-col gap-2">
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   data-testid="button-profile"
                   className="rounded-xl hover:bg-muted/50 w-10 h-10 p-2"
                 >
                   <User className="h-5 w-5" />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  data-testid="button-settings"
+                  className="rounded-xl hover:bg-muted/50 w-10 h-10 p-2"
+                >
+                  <Settings className="h-5 w-5" />
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
